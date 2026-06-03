@@ -1,0 +1,11 @@
+node_modules
+dist
+.env.local
+
+# Client reference files (sensitive — keep local, not in repo)
+*.pdf
+*.xlsx
+*.bef
+*.JPG
+*.jpg
+Danea EasyFatt 2009 Enterprise/
