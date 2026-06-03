@@ -1,0 +1,21 @@
+import SyncStatusBadge from '../components/SyncStatusBadge.jsx'
+import { logout } from '../lib/auth.js'
+
+export default function Home() {
+  return (
+    <div className="p-6">
+      <header className="flex items-center justify-between mb-6">
+        <h1 className="text-xl font-bold">OdontoApp</h1>
+        <div className="flex items-center gap-3">
+          <SyncStatusBadge />
+          <button className="text-sm text-blue-600" onClick={() => logout()}>Esci</button>
+        </div>
+      </header>
+      <nav className="flex gap-4">
+        <span>Fatture</span>
+        <span>Conformità</span>
+        <span>Anagrafiche</span>
+      </nav>
+    </div>
+  )
+}
