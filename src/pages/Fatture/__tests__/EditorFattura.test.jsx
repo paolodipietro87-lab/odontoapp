@@ -30,7 +30,7 @@ function renderEditor() {
 describe('EditorFattura', () => {
   it('computes live totals with bollo when over threshold', async () => {
     renderEditor()
-    await waitFor(() => screen.getByText(/Seleziona cliente/i))
+    await waitFor(() => screen.getByPlaceholderText(/Cerca cliente/i))
     const numbers = screen.getAllByRole('spinbutton')
     fireEvent.change(numbers[1], { target: { value: '100' } }) // prezzo (qta, prezzo, sconto order)
     await waitFor(() => expect(screen.getByText(/Bollo: € 2.00/)).toBeInTheDocument())
@@ -39,7 +39,7 @@ describe('EditorFattura', () => {
 
   it('Emetti is disabled until a cliente is selected', async () => {
     renderEditor()
-    await waitFor(() => screen.getByText(/Seleziona cliente/i))
+    await waitFor(() => screen.getByPlaceholderText(/Cerca cliente/i))
     expect(screen.getByRole('button', { name: 'Emetti' })).toBeDisabled()
   })
 })
