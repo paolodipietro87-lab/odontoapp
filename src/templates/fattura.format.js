@@ -1,4 +1,5 @@
 // Formatter puri per il PDF fattura. Niente JSX qui → tutto unit-testabile.
+import { importoRiga } from '../utils/calcoli.js'
 
 const eurFmt = (decimali) => new Intl.NumberFormat('it-IT', {
   minimumFractionDigits: decimali, maximumFractionDigits: decimali, useGrouping: true,
@@ -14,17 +15,6 @@ export function formatPrezzo(n) {
 
 export function quantitaLabel(qta, um) {
   return `${qta}${um ?? ''}`
-}
-
-function round2(n) {
-  return Math.round((n + Number.EPSILON) * 100) / 100
-}
-
-function importoRiga(r) {
-  const q = Number(r.qta) || 0
-  const p = Number(r.prezzo) || 0
-  const s = Number(r.sconto) || 0
-  return round2(q * p * (1 - s / 100))
 }
 
 export function risolviDestinazione(fattura) {
@@ -56,7 +46,7 @@ export function fatturaToProps(doc) {
       quantita: quantitaLabel(r.qta, r.um),
       prezzo: formatPrezzo(r.prezzo),
       sconto: r.sconto ? `${r.sconto}%` : '',
-      importo: formatEuro(importoRiga(r)),
+      importo: formatEuro(importoRiga(r.qta, r.prezzo, r.sconto)),
       iva: 'FC',
     })),
     totali: {
