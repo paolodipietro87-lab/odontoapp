@@ -1,3 +1,4 @@
+import { Link } from 'react-router-dom'
 import SyncStatusBadge from '../components/SyncStatusBadge.jsx'
 import { logout } from '../lib/auth.js'
 
@@ -12,9 +13,9 @@ export default function Home() {
         </div>
       </header>
       <nav className="flex gap-4">
-        <span>Fatture</span>
-        <span>Conformità</span>
-        <span>Anagrafiche</span>
+        <span className="text-gray-400">Fatture</span>
+        <span className="text-gray-400">Conformità</span>
+        <Link to="/anagrafiche" className="text-blue-600">Anagrafiche</Link>
       </nav>
     </div>
   )
