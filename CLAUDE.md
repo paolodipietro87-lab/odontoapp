@@ -153,7 +153,7 @@ odoapp/
 | # | Decisione | Stato |
 |---|---|---|
 | 1 | Storage sync multi-device | ✅ Firebase Firestore (offline persistence nativa) |
-| 2 | Account GitHub: stesso o nuovo? | ⏳ Aperta (non bloccante) |
+| 2 | Account GitHub: stesso o nuovo? | ✅ Account `paolodipietro87-lab`, repo **pubblico** `odontoapp`, deploy GitHub Pages |
 | 3 | Regime IVA esatto | ✅ Fuori Campo IVA (FC) su tutto, bollo €2 se >77,47 |
 | 4 | Layout fattura e conformità | ✅ Estratti dagli esempi (conformità = 3 doc in 1) |
 | 5 | Percorso Obsidian vault | ⏳ In attesa cliente |
@@ -203,4 +203,8 @@ odoapp/
   - Prodotti 6→16: + Categoria, Sottocategoria, Listino 2/3, Note, Cod. a barre, Produttore, Cod. fornitore, Fornitore, Prezzo forn.
   - Scartati di proposito: magazzino, SDD/banca, campi PA (fuori scope SDI), Extra 1-6, Regione/Nazione.
 - File toccati: `src/pages/Anagrafiche/schema.js`, `src/services/excel.js` (+ test). `RecordEditor` rende i campi da `FIELDS[kind]` → nuovi campi automatici. 33 test verdi. Ri-import reale dei 3 Excel da UI: OK.
-- **Da fare:** (1) decisione #2 GitHub → deploy; (2) merge branch; (3) Piano 3 Fatture+progressivo.
+- **Deploy live (decisione #2 risolta):** account GitHub `paolodipietro87-lab`, repo **pubblico** `odontoapp` (Pages free non supporta repo privati su piano €0; chiavi Firebase non sono segrete → repo pubblico OK, sicurezza via regole Firestore+Auth). 6 secret `VITE_FB_*` caricati, branch `main` = tutto il lavoro. Workflow fixato (env Firebase passate anche allo step `npm test`, prima fallava `auth/invalid-api-key`). Deploy verde.
+  - **URL live:** https://paolodipietro87-lab.github.io/odontoapp/
+  - Aggiunto dominio `paolodipietro87-lab.github.io` agli Authorized domains Firebase Auth (necessario, altrimenti `auth/unauthorized-domain`). Login live verificato OK.
+  - Branch locali `foundation`/`anagrafiche`/`master` eliminati (tutto in `main`).
+- **Da fare:** Piano 3 Fatture + progressivo (critico, zero-tolleranza).
