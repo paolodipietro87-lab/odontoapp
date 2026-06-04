@@ -1,7 +1,7 @@
 # CLAUDE.md — Progetto OdontoApp
 
 > Cervello del progetto. Aggiornare a ogni sessione conclusa.
-> Ultima modifica: 2026-06-01
+> Ultima modifica: 2026-06-04
 
 ---
 
@@ -163,6 +163,10 @@ odoapp/
 | 9 | Formato progressivo | ✅ NNN/ANNO, da 001/2026, reset annuale |
 | 10 | Offline behavior | ✅ Offline-first, numero fattura solo online (transaction) |
 | 11 | Auth | ✅ Firebase Auth, 1 solo account (Pietro admin) |
+| 12 | Numero in bozza | ✅ Nessuno: numero assegnato solo all'"Emetti" (bozza cancellabile senza bruciare numeri) |
+| 13 | Fattura emessa | ✅ Sola lettura, mai modificabile (correzioni = nota credito, fuori MVP) |
+| 14 | Anno del contatore | ✅ Anno della DATA fattura (non data di sistema) |
+| 15 | Meccanica emissione | ✅ Approccio A: transaction unica contatore+fattura (atomica, zero buchi). Offline → resta bozza |
 
 ---
 
@@ -208,3 +212,16 @@ odoapp/
   - Aggiunto dominio `paolodipietro87-lab.github.io` agli Authorized domains Firebase Auth (necessario, altrimenti `auth/unauthorized-domain`). Login live verificato OK.
   - Branch locali `foundation`/`anagrafiche`/`master` eliminati (tutto in `main`).
 - **Da fare:** Piano 3 Fatture + progressivo (critico, zero-tolleranza).
+
+### 2026-06-04 — Sessione 4 (Piano 3: Fatture + progressivo)
+
+- **Brainstorming nodi critici progressivo** → nuove decisioni 12-15 (vedi tabella).
+- **Spec + Piano scritti:** `docs/superpowers/specs/2026-06-04-fatture-progressivo-design.md`, `docs/superpowers/plans/2026-06-04-fatture-progressivo.md`.
+- **Piano 3 eseguito** (subagent-driven + TDD, 6 task codice, branch `fatture`):
+  - `utils/calcoli.js` (puro): `importoRiga`, `calcolaTotali` → totali FC (imponibile/imposta=0) + bollo €2 se totale > 77,47 (confine stretto `>`).
+  - `services/progressivo.js`: `formattaNumero` (NNN/ANNO zero-pad) + `emettiFattura` (**transaction atomica** contatore+fattura nello stesso atto → zero buchi, numero solo online).
+  - `lib/db/fatture.js`: CRUD bozze (`creaBozza/getOne/aggiornaBozza/deleteBozza/listAll`) con guard sola-lettura sulle emesse.
+  - UI: `ClienteSelect` (congela snapshot), `RigaFattura` (autocomplete prodotto), `EditorFattura` (totali live + Emetti con conferma), `ListaFatture`, `DettaglioFattura` (sola lettura, bottone PDF placeholder). Routing `/fatture[/nuova|/:id|/:id/modifica]`, link da Home.
+  - **62 test verdi**, build OK. Test progressivo con fake fedele di `runTransaction` (sequenza/no-buchi/anno-da-data/reject-emessa). **Nota:** progetto NON usa emulatore Firestore → mock di `firebase/firestore`; atomicità reale da confermare in e2e.
+- **PDF rimandato a Piano 4** (FatturaPDF + ConformitaPDF insieme).
+- **Da fare prossima sessione:** (1) **Task 7 e2e manuale** (utente: avvia app, crea bozza → Emetti → verifica 001/2026, contatore Firestore, offline blocca, delete bozza non brucia numero); (2) merge branch `fatture` → `main` + deploy; (3) Piano 4 PDF.

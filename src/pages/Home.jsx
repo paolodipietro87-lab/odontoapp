@@ -13,7 +13,7 @@ export default function Home() {
         </div>
       </header>
       <nav className="flex gap-4">
-        <span className="text-gray-400">Fatture</span>
+        <Link to="/fatture" className="text-blue-600">Fatture</Link>
         <span className="text-gray-400">Conformità</span>
         <Link to="/anagrafiche" className="text-blue-600">Anagrafiche</Link>
       </nav>
