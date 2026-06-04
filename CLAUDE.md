@@ -1,7 +1,7 @@
 # CLAUDE.md — Progetto OdontoApp
 
 > Cervello del progetto. Aggiornare a ogni sessione conclusa.
-> Ultima modifica: 2026-06-04
+> Ultima modifica: 2026-06-04 (sessione 5)
 
 ---
 
@@ -167,6 +167,7 @@ odoapp/
 | 13 | Fattura emessa | ✅ Sola lettura, mai modificabile (correzioni = nota credito, fuori MVP) |
 | 14 | Anno del contatore | ✅ Anno della DATA fattura (non data di sistema) |
 | 15 | Meccanica emissione | ✅ Approccio A: transaction unica contatore+fattura (atomica, zero buchi). Offline → resta bozza |
+| 16 | Versioni PDF fattura | ✅ Una sola versione CON intestazione (unico esempio fornito). PDF solo da fattura emessa. Libreria `@react-pdf/renderer` |
 
 ---
 
@@ -225,3 +226,18 @@ odoapp/
   - **62 test verdi**, build OK. Test progressivo con fake fedele di `runTransaction` (sequenza/no-buchi/anno-da-data/reject-emessa). **Nota:** progetto NON usa emulatore Firestore → mock di `firebase/firestore`; atomicità reale da confermare in e2e.
 - **PDF rimandato a Piano 4** (FatturaPDF + ConformitaPDF insieme).
 - **Da fare prossima sessione:** (1) **Task 7 e2e manuale** (utente: avvia app, crea bozza → Emetti → verifica 001/2026, contatore Firestore, offline blocca, delete bozza non brucia numero); (2) merge branch `fatture` → `main` + deploy; (3) Piano 4 PDF.
+
+### 2026-06-04 — Sessione 5 (Piano 4: Fattura PDF)
+
+- **Scope deciso:** Piano 4 = **solo Fattura PDF** (la fattura ha già i dati). Conformità (modulo da zero: data model + editor + PDF) rimandata a **Piano 5**.
+- **Decisioni PDF (brainstorming):** libreria `@react-pdf/renderer`; **una sola versione CON intestazione** (unico esempio fornito, niente "senza intestazione"); PDF **solo da fattura emessa** (dettaglio sola-lettura).
+- **Spec + Piano:** `docs/superpowers/specs/2026-06-04-fattura-pdf-design.md`, `docs/superpowers/plans/2026-06-04-fattura-pdf.md`.
+- **Eseguito** (subagent-driven + TDD, 6 task, branch `pdf-fattura`):
+  - `templates/lab.js`: costanti intestazione tecnico (unico punto di verità, estratte dall'esempio).
+  - `templates/fattura.format.js` (puro, testato): `formatEuro` (it-IT, virgola, `useGrouping`), `formatPrezzo` (3 dec.), `quantitaLabel`, `risolviDestinazione` (fallback destinazione→clienteSnapshot), `fatturaToProps` (doc Firestore → props formattate). **Riusa `importoRiga` da `utils/calcoli.js`** (no duplicato money math).
+  - `templates/fatturaPdf.styles.js` + `templates/FatturaPDF.jsx`: layout @react-pdf copia fedele (header, box nr/data, Destinatario|Destinazione, tabella righe, riepilogo FC, box totali, note legali, Pag.1).
+  - `components/fatture/PulsanteScaricaPdf.jsx`: `PDFDownloadLink`, file `Fattura_NNN-ANNO_denominazione.pdf`. Sostituito il placeholder in `DettaglioFattura`.
+  - `vite.config.js`: alzato `workbox.maximumFileSizeToCacheInBytes` a 5 MiB (bundle @react-pdf ~2,5 MB > default 2 MiB).
+- **Verifica fedeltà:** generato PDF di prova coi dati dell'esempio 9 e confrontato fianco-a-fianco → **copia fedele**. Unica differenza voluta: numero `009/2024` (formato nostro NNN/ANNO) vs `9` secco di Danea.
+- **73 test verdi**, build OK. Code review passata (fix DRY money math applicato).
+- **Da fare prossima sessione:** (1) merge `pdf-fattura` → `main` + deploy; (2) e2e reale dell'utente (scarica PDF da una fattura emessa live); (3) **Piano 5 Conformità** (modulo completo: data model rapportino + editor + PDF con/senza intestazione, 3 doc in 1).
