@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import { mapClienteRow, mapProdottoRow } from '../excel.js'
+import { mapClienteRow, mapProdottoRow, dedupByCod } from '../excel.js'
 
 describe('mapClienteRow', () => {
   it('maps Danea cliente columns to app fields', () => {
@@ -59,5 +59,18 @@ describe('mapProdottoRow', () => {
   it('sets listino1 to null when absent', () => {
     const row = { 'Cod.': '1', 'Descrizione': 'Y' }
     expect(mapProdottoRow(row).listino1).toBeNull()
+  })
+})
+
+describe('dedupByCod', () => {
+  it('keeps one row per cod, last wins', () => {
+    const rows = [
+      { cod: '1', denominazione: 'A' },
+      { cod: '2', denominazione: 'B' },
+      { cod: '1', denominazione: 'A2' },
+    ]
+    const out = dedupByCod(rows)
+    expect(out).toHaveLength(2)
+    expect(out.find((r) => r.cod === '1').denominazione).toBe('A2')
   })
 })
