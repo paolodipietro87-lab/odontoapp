@@ -5,7 +5,11 @@ const listAll = vi.fn(() => Promise.resolve([
   { id: '0004', cod: '0004', denominazione: 'Dott. CIARDELLI', citta: 'Teramo' },
   { id: '0005', cod: '0005', denominazione: 'Dott. MARINI', citta: 'Teramo' },
 ]))
-vi.mock('../../../lib/db/anagrafiche.js', () => ({ listAll: (...a) => listAll(...a) }))
+const deleteOne = vi.fn(() => Promise.resolve())
+vi.mock('../../../lib/db/anagrafiche.js', () => ({
+  listAll: (...a) => listAll(...a),
+  deleteOne: (...a) => deleteOne(...a),
+}))
 
 import ListaAnagrafica from '../ListaAnagrafica.jsx'
 
@@ -23,5 +27,22 @@ describe('ListaAnagrafica', () => {
     fireEvent.change(screen.getByPlaceholderText(/cerca/i), { target: { value: 'MARINI' } })
     await waitFor(() => expect(screen.queryByText('Dott. CIARDELLI')).not.toBeInTheDocument())
     expect(screen.getByText('Dott. MARINI')).toBeInTheDocument()
+  })
+
+  it('calls onEdit with the row record when Modifica clicked', async () => {
+    const onEdit = vi.fn()
+    render(<ListaAnagrafica kind="clienti" columns={['cod', 'denominazione', 'citta']} onEdit={onEdit} />)
+    await waitFor(() => screen.getByText('Dott. CIARDELLI'))
+    fireEvent.click(screen.getAllByRole('button', { name: /modifica/i })[0])
+    expect(onEdit).toHaveBeenCalledWith(expect.objectContaining({ cod: '0004' }))
+  })
+
+  it('deletes a row after confirm', async () => {
+    render(<ListaAnagrafica kind="clienti" columns={['cod', 'denominazione', 'citta']} onEdit={() => {}} />)
+    await waitFor(() => screen.getByText('Dott. CIARDELLI'))
+    fireEvent.click(screen.getAllByRole('button', { name: /elimina/i })[0])
+    const elims = screen.getAllByRole('button', { name: /elimina/i })
+    fireEvent.click(elims[elims.length - 1]) // the dialog confirm button
+    await waitFor(() => expect(deleteOne).toHaveBeenCalledWith('clienti', '0004'))
   })
 })
