@@ -29,6 +29,21 @@ export function mapClienteRow(row) {
     cf: text(pick(row, 'Codice fiscale')),
     piva: text(pick(row, 'Partita Iva')),
     pagamento: text(pick(row, 'Pagamento')),
+    // Contatti
+    referente: text(pick(row, 'Referente')),
+    tel: text(pick(row, 'Tel.')),
+    cell: text(pick(row, 'Cell')),
+    fax: text(pick(row, 'Fax')),
+    email: text(pick(row, 'e-mail')),
+    pec: text(pick(row, 'Pec')),
+    // Commerciale
+    sconti: text(pick(row, 'Sconti')),
+    listino: text(pick(row, 'Listino')),
+    fido: text(pick(row, 'Fido')),
+    agente: text(pick(row, 'Agente')),
+    // Note
+    note: text(pick(row, 'Note')),
+    noteDoc: text(pick(row, 'Note doc.')),
   }
 }
 
@@ -42,6 +57,20 @@ export function mapProdottoRow(row) {
     um: text(pick(row, 'Cod. Udm')),
     codIva: text(pick(row, 'Cod. Iva')),
     listino1: numOrNull(pick(row, 'Listino 1')),
+    // Categorie
+    categoria: text(pick(row, 'Categoria')),
+    sottocategoria: text(pick(row, 'Sottocategoria')),
+    // Listini alternativi
+    listino2: numOrNull(pick(row, 'Listino 2')),
+    listino3: numOrNull(pick(row, 'Listino 3')),
+    // Note + barcode
+    note: text(pick(row, 'Note')),
+    codBarre: text(pick(row, 'Cod. a barre')),
+    produttore: text(pick(row, 'Produttore')),
+    // Fornitore
+    codFornitore: text(pick(row, 'Cod. fornitore')),
+    fornitore: text(pick(row, 'Fornitore')),
+    prezzoForn: numOrNull(pick(row, 'Prezzo forn.')),
   }
 }
 

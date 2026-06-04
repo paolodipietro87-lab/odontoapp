@@ -14,7 +14,7 @@ describe('mapClienteRow', () => {
       'Partita Iva': '00780240677',
       'Pagamento': 'Primo incasso',
     }
-    expect(mapClienteRow(row)).toEqual({
+    expect(mapClienteRow(row)).toMatchObject({
       cod: '0004',
       denominazione: 'Dott. CIARDELLI PIERLUIGI',
       indirizzo: 'Via Nazionale, 42',
@@ -24,6 +24,38 @@ describe('mapClienteRow', () => {
       cf: 'CRDPLG59R07L103P',
       piva: '00780240677',
       pagamento: 'Primo incasso',
+    })
+  })
+
+  it('maps extended cliente columns (contatti, commerciale, note)', () => {
+    const row = {
+      'Cod.': '0004',
+      'Referente': 'Mario Rossi',
+      'Tel.': '0861-123',
+      'Cell': '333-1',
+      'Fax': '0861-999',
+      'e-mail': 'a@b.it',
+      'Pec': 'a@pec.it',
+      'Sconti': '10',
+      'Listino': '1',
+      'Fido': '5000',
+      'Agente': 'AG1',
+      'Note': 'nota libera',
+      'Note doc.': 'nota doc',
+    }
+    expect(mapClienteRow(row)).toMatchObject({
+      referente: 'Mario Rossi',
+      tel: '0861-123',
+      cell: '333-1',
+      fax: '0861-999',
+      email: 'a@b.it',
+      pec: 'a@pec.it',
+      sconti: '10',
+      listino: '1',
+      fido: '5000',
+      agente: 'AG1',
+      note: 'nota libera',
+      noteDoc: 'nota doc',
     })
   })
 
@@ -46,13 +78,41 @@ describe('mapProdottoRow', () => {
       'Cod. Iva': 'FC',
       'Listino 1': 12.5,
     }
-    expect(mapProdottoRow(row)).toEqual({
+    expect(mapProdottoRow(row)).toMatchObject({
       cod: '0045',
       descrizione: 'Filo tondo 0,9',
       tipologia: 'Art. con magazzino (lotti)',
       um: 'mt',
       codIva: 'FC',
       listino1: 12.5,
+    })
+  })
+
+  it('maps extended prodotto columns (categorie, listini, fornitore)', () => {
+    const row = {
+      'Cod.': '0045',
+      'Categoria': 'Ortodonzia',
+      'Sottocategoria': 'Fili',
+      'Listino 2': 14,
+      'Listino 3': '15,5',
+      'Note': 'nota prod',
+      'Cod. a barre': '800123',
+      'Produttore': 'ACME',
+      'Cod. fornitore': 'F01',
+      'Fornitore': 'GERHO',
+      'Prezzo forn.': '9,9',
+    }
+    expect(mapProdottoRow(row)).toMatchObject({
+      categoria: 'Ortodonzia',
+      sottocategoria: 'Fili',
+      listino2: 14,
+      listino3: 15.5,
+      note: 'nota prod',
+      codBarre: '800123',
+      produttore: 'ACME',
+      codFornitore: 'F01',
+      fornitore: 'GERHO',
+      prezzoForn: 9.9,
     })
   })
 

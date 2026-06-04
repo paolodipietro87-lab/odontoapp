@@ -194,3 +194,13 @@ odoapp/
 - Nuova decisione: CRUD anagrafiche = solo record (campi fissi), delete con dialog conferma.
 - **Da fare prossima sessione:** (1) avviare server → utente testa ricerca "intelligente" + CRUD; (2) decisione #2 account/repo GitHub → deploy online; (3) merge branch; (4) Piano 3 Fatture+progressivo.
 - Spec: `docs/superpowers/specs/2026-06-03-odontoapp-design.md`. Piani: `docs/superpowers/plans/2026-06-0{3,4}-*.md`.
+
+### 2026-06-04 — Sessione 3 (estensione campi anagrafiche)
+
+- Verifica manuale ricerca lista + CRUD: OK (P2b Task 7 chiuso).
+- Scoperto che gli Excel Danea hanno 44 colonne (clienti/fornitori) e 48 (prodotti); mapping iniziale ne teneva solo 9 e 6. Decisione: **set curato esteso** (no raw dump).
+  - Clienti/Fornitori 9→21: + Referente, Tel, Cell, Fax, e-mail, Pec, Sconti, Listino, Fido, Agente, Note, Note doc.
+  - Prodotti 6→16: + Categoria, Sottocategoria, Listino 2/3, Note, Cod. a barre, Produttore, Cod. fornitore, Fornitore, Prezzo forn.
+  - Scartati di proposito: magazzino, SDD/banca, campi PA (fuori scope SDI), Extra 1-6, Regione/Nazione.
+- File toccati: `src/pages/Anagrafiche/schema.js`, `src/services/excel.js` (+ test). `RecordEditor` rende i campi da `FIELDS[kind]` → nuovi campi automatici. 33 test verdi. Ri-import reale dei 3 Excel da UI: OK.
+- **Da fare:** (1) decisione #2 GitHub → deploy; (2) merge branch; (3) Piano 3 Fatture+progressivo.
