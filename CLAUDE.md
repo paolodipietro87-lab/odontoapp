@@ -184,3 +184,13 @@ odoapp/
 - Progetto spezzato in 5 piani incrementali; scritto Piano 1 Foundation: `docs/superpowers/plans/2026-06-03-foundation.md`
 - Iniziato Task 0 (setup Firebase): bloccato su limite progetti account → richiesto aumento a Google
 - **Prossimo passo:** approvazione aumento Firebase → creare progetto `odontoapp-boromei` → catturare firebaseConfig → eseguire piano Foundation
+
+### 2026-06-04 — Sessione 2 (Foundation + Anagrafiche + CRUD)
+- Firebase creato: progetto `odontoapp-boromei` (piano Spark, eur3), Firestore + Auth Email/Password + regole (solo utente autenticato). `.env.local` popolato (gitignored). Admin = mail Paolo; Pietro da aggiungere dopo.
+- Repo git inizializzato in `Peter/`, file cliente (PDF/xlsx/.bef/installer) gitignorati. Branch `foundation` poi `anagrafiche`.
+- **Piano Foundation eseguito** (subagent-driven, 8 task): Vite+React+Tailwind+Vitest, Firebase init con offline persistence, auth hook + Login, SyncStatusBadge, app shell, PWA manifest/sw, workflow deploy GitHub Pages. App testata in locale: login + home OK.
+- **Piano Anagrafiche eseguito**: parser Excel (mapping colonne Danea, header mojibake tollerato), data layer Firestore (importRows/listAll), import page (upload/preview/conferma), lista con ricerca, routing react-router. Import reale dei 3 file Danea verificato OK.
+- **Piano Anagrafiche CRUD eseguito**: schema campi, getOne/upsertOne/deleteOne, ConfirmDialog, RecordEditor (cod immutabile in edit), azioni Modifica/Elimina con conferma. 31 test verdi, build OK.
+- Nuova decisione: CRUD anagrafiche = solo record (campi fissi), delete con dialog conferma.
+- **Da fare prossima sessione:** (1) avviare server → utente testa ricerca "intelligente" + CRUD; (2) decisione #2 account/repo GitHub → deploy online; (3) merge branch; (4) Piano 3 Fatture+progressivo.
+- Spec: `docs/superpowers/specs/2026-06-03-odontoapp-design.md`. Piani: `docs/superpowers/plans/2026-06-0{3,4}-*.md`.
