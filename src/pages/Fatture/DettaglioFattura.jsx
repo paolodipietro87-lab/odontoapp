@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import { useParams, Navigate, Link } from 'react-router-dom'
 import { getOne } from '../../lib/db/fatture.js'
+import PulsanteScaricaPdf from '../../components/fatture/PulsanteScaricaPdf.jsx'
 
 export default function DettaglioFattura() {
   const { id } = useParams()
@@ -41,9 +42,7 @@ export default function DettaglioFattura() {
         <div>Bollo: € {Number(fattura.bollo ?? 0).toFixed(2)}</div>
         <div className="font-bold">Totale documento: € {Number(fattura.totale ?? 0).toFixed(2)}</div>
       </div>
-      <button type="button" disabled className="mt-4 bg-gray-200 rounded px-4 py-2 cursor-not-allowed" title="Disponibile nel Piano 4">
-        Scarica PDF (in arrivo)
-      </button>
+      <PulsanteScaricaPdf fattura={fattura} />
     </div>
   )
 }

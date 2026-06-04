@@ -8,6 +8,10 @@ export default defineConfig({
     react(),
     VitePWA({
       registerType: 'autoUpdate',
+      workbox: {
+        // @react-pdf produce un bundle > 2 MiB: alza il limite di precache.
+        maximumFileSizeToCacheInBytes: 5 * 1024 * 1024,
+      },
       manifest: {
         name: 'OdontoApp',
         short_name: 'OdontoApp',
