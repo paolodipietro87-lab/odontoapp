@@ -106,6 +106,7 @@ export default function EditorFattura() {
       {confirmEmetti && (
         <ConfirmDialog
           message="Emettere la fattura? Verrà assegnato il numero progressivo definitivo e non sarà più modificabile."
+          confirmLabel="Emetti"
           onConfirm={emetti}
           onCancel={() => setConfirmEmetti(false)}
         />
