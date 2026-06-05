@@ -14,7 +14,7 @@ export default function Home() {
       </header>
       <nav className="flex gap-4">
         <Link to="/fatture" className="text-blue-600">Fatture</Link>
-        <span className="text-gray-400">Conformità</span>
+        <Link to="/conformita" className="text-blue-600">Conformità</Link>
         <Link to="/anagrafiche" className="text-blue-600">Anagrafiche</Link>
       </nav>
     </div>
