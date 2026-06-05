@@ -1,7 +1,7 @@
 # CLAUDE.md — Progetto OdontoApp
 
 > Cervello del progetto. Aggiornare a ogni sessione conclusa.
-> Ultima modifica: 2026-06-05 (sessione 7)
+> Ultima modifica: 2026-06-05 (sessione 8)
 
 ---
 
@@ -270,3 +270,19 @@ odoapp/
   - **89 test verdi**, build OK, deploy GitHub Pages verde, ritest live utente: **funziona**.
 - **Lezione (offline-first Firestore):** le write offline NON rigettano né risolvono finché non torni online. Per azioni che richiedono rete (es. emissione numero) **guardare `navigator.onLine` PRIMA della prima scrittura**, non dopo.
 - **Da fare prossima sessione:** **pre-consegna** (su richiesta utente): azzerare fatture test + doc `contatori/{anno}` in Firestore prima di Pietro. Resto MVP completo e live.
+
+### 2026-06-05 — Sessione 8 (rifiniture: QoL + estetica)
+
+- **Fase rifiniture** (no piani grossi). 4 micro-feature + restyle completo. Branch `rifiniture-ui` → merge `main` → deploy verde.
+- **Micro-feature:**
+  - `components/PageHeader.jsx`: header riusabile **Indietro** (`useNavigate(-1)`) + **Home** (`/`), in tutte le sezioni (liste, editor, dettagli, import, anagrafiche). ImportPage test ora wrappa `MemoryRouter`.
+  - Home: titolo "OdontoApp" → **"Ciao Pietro"** (solo Home, deciso con utente; title scheda/manifest restano OdontoApp).
+  - **Condividi PDF** (`components/PulsanteCondividiPdf.jsx`): genera blob con `pdf(doc).toBlob()` → **Web Share API** (`navigator.share({files})`) con check `puoCondividereFile`, **fallback download** su desktop. Su fattura (1) + conformità (2: medico/paziente). Gestito `AbortError` (utente chiude menu) come no-op. **Va testato da telefono su HTTPS** (desktop spesso fallback).
+  - `utils/condivisione.js` (puro, **9 test**): `nomeFileFattura`, `nomeFileConformita`, `puoCondividereFile`, `slug`. Centralizza i nomi file PDF (rimosso slug duplicato dai 2 PulsanteScarica).
+- **Estetica (decisioni con utente): palette "Teal clinico" + sizing "Comodo touch".**
+  - `tailwind.config.js`: scala `blue` **rimappata su teal** brand (600=#0E7C7B primario, 500=#14B8A6 accento) → restyle istantaneo senza toccare ogni `bg-blue-600`. Aggiunto token `brand`. Rosso/verde (errori/ok) intatti.
+  - `index.css`: base **16px** (no zoom iOS sugli input), sfondo `#F8FAFB`, testo `#1F2933`, font system-ui, **input/select/textarea min-height 44px**.
+  - Home: 3 **card grandi** per sezione (touch-friendly). Login + PageHeader rifiniti (bordi, rounded-lg, py-2).
+  - **Icona PWA = molare** bianco su tondo teal. Sorgente versionato `scripts/molar.svg` + `scripts/gen-icons.mjs` (rasterizza con **sharp** → `public/icon-192/512.png` + `favicon.svg`). Rigenera: `node scripts/gen-icons.mjs`. Manifest `theme/background_color` teal, icone `purpose: any maskable`, `<meta theme-color>` in index.html.
+- **98 test verdi**, build verde, deploy GitHub Pages verde.
+- **Da fare prossima sessione:** (1) **e2e utente da telefono** (icona installata, Condividi nativo, teal/touch su mobile) → feedback; (2) eventuali altre rifiniture; (3) resta in sospeso il **pre-consegna** (azzerare fatture+contatore prima di Pietro).
