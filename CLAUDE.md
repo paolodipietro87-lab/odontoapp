@@ -1,7 +1,7 @@
 # CLAUDE.md — Progetto OdontoApp
 
 > Cervello del progetto. Aggiornare a ogni sessione conclusa.
-> Ultima modifica: 2026-06-04 (sessione 5)
+> Ultima modifica: 2026-06-05 (sessione 6)
 
 ---
 
@@ -168,6 +168,7 @@ odoapp/
 | 14 | Anno del contatore | ✅ Anno della DATA fattura (non data di sistema) |
 | 15 | Meccanica emissione | ✅ Approccio A: transaction unica contatore+fattura (atomica, zero buchi). Offline → resta bozza |
 | 16 | Versioni PDF fattura | ✅ Una sola versione CON intestazione (unico esempio fornito). PDF solo da fattura emessa. Libreria `@react-pdf/renderer` |
+| 17 | Modello conformità | ✅ Medico = anagrafica clienti (snapshot); paziente = unico campo libero (2 punti, stesso valore); bullet conservazione + Ministero/REA fissi; avvertenze/prodotti/note/termini opzionali liberi; materiali con autocomplete prodotti; sempre modificabile (no progressivo). PDF 2 versioni (prop `intestazione`: medico con header / paziente senza) |
 
 ---
 
@@ -241,3 +242,19 @@ odoapp/
 - **Verifica fedeltà:** generato PDF di prova coi dati dell'esempio 9 e confrontato fianco-a-fianco → **copia fedele**. Unica differenza voluta: numero `009/2024` (formato nostro NNN/ANNO) vs `9` secco di Danea.
 - **73 test verdi**, build OK. Code review passata (fix DRY money math applicato).
 - **Da fare prossima sessione:** (1) merge `pdf-fattura` → `main` + deploy; (2) e2e reale dell'utente (scarica PDF da una fattura emessa live); (3) **Piano 5 Conformità** (modulo completo: data model rapportino + editor + PDF con/senza intestazione, 3 doc in 1).
+
+### 2026-06-05 — Sessione 6 (Piano 5: Conformità completo)
+
+- **Decisione #17** (brainstorming): medico = anagrafica clienti (snapshot); paziente = unico campo libero (non in anagrafica, compare in 2 punti col stesso valore); bullet conservazione + N° Ministero/REA fissi; avvertenze/prodotti/note/termini opzionali liberi; materiali con autocomplete prodotti (Tipo←descrizione, Fabbricante←produttore, Modello←descrizione, Lotto a mano); **sempre modificabile** (no progressivo, no stato).
+- **Spec + Piano:** `docs/superpowers/specs/2026-06-04-conformita-design.md`, `docs/superpowers/plans/2026-06-04-conformita.md`.
+- **Piano 5 eseguito** (TDD, 11 task, branch `conformita`, poi merge `main`):
+  - `templates/lab.js` esteso (`nomeUpper/ministero/rea`) + `templates/conformita.fixed.js` (testi legali fissi: bullet, dichiarazione, istruzioni d'uso, footer firme).
+  - `templates/conformita.format.js` (puro, testato): `conformitaToProps` (date passthrough, paziente trim, prescrivente da clienteSnapshot) + `pulisciMateriali` (scarta righe vuote).
+  - `lib/db/conformita.js`: CRUD pieno (`crea/getOne/aggiorna/elimina/listAll`), niente guard (sempre editabile), collection `conformita`, ordine `data desc`.
+  - `templates/conformitaPdf.styles.js` + `templates/ConformitaPDF.jsx`: copia fedele @react-pdf. **Prop `intestazione`**: `true` = render header lab (per medico), `false` = senza (per paziente). Layout: Ministero+REA, box Dichiarazione|Etichettatura affiancati, tabella materiali, istruzioni d'uso fisse, footer firme.
+  - `components/conformita/PulsanteScaricaPdfConformita.jsx` (prop `intestazione`+`label`, file `Rapporto_<data>_<paziente>[_paziente].pdf`) + `RigaMateriale.jsx` (autocomplete prodotti).
+  - UI: `pages/Conformita/{EditorConformita,ListaConformita,DettaglioConformita}.jsx`. Editor riusa `ClienteSelect`. Lista ricerca paziente/data. Dettaglio = **2 bottoni PDF** (per medico / per paziente). Routing `/conformita[/nuova|/:id|/:id/modifica]`, link Home attivo.
+- **Verifica fedeltà:** generati i 2 PDF di prova (dati esempio Botticelli Angela / Dott. Sacripante / 2 righe Ivoclar) e letti → **copia fedele** di entrambi gli esempi. Versione paziente correttamente senza header lab.
+- **88 test verdi**, build OK. Merge `conformita` → `main` + deploy GitHub Pages.
+- **Nota processo:** i subagent hanno colpito il limite di sessione a metà; task implementati direttamente, ognuno verificato (test+build verdi, fedeltà PDF confermata).
+- **Da fare prossima sessione:** (1) **e2e reale utente** (crea rapportino live → scarica i 2 PDF, verifica fedeltà su stampa); (2) feedback su layout/campi; (3) **pre-consegna: azzerare fatture test + contatore** prima di Pietro.
