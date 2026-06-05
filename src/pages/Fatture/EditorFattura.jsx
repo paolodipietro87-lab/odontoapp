@@ -50,7 +50,12 @@ export default function EditorFattura() {
   }
 
   async function emetti() {
-    setConfirmEmetti(false); setError(''); setBusy(true)
+    setConfirmEmetti(false); setError('')
+    if (typeof navigator !== 'undefined' && navigator.onLine === false) {
+      setError('Serve connessione internet per emettere il numero. La fattura resta in bozza.')
+      return
+    }
+    setBusy(true)
     try {
       const fid = await salvaSilenzioso()
       await emettiFattura(fid)
