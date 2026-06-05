@@ -1,7 +1,7 @@
 # CLAUDE.md — Progetto OdontoApp
 
 > Cervello del progetto. Aggiornare a ogni sessione conclusa.
-> Ultima modifica: 2026-06-05 (sessione 6)
+> Ultima modifica: 2026-06-05 (sessione 7)
 
 ---
 
@@ -258,3 +258,15 @@ odoapp/
 - **88 test verdi**, build OK. Merge `conformita` → `main` + deploy GitHub Pages.
 - **Nota processo:** i subagent hanno colpito il limite di sessione a metà; task implementati direttamente, ognuno verificato (test+build verdi, fedeltà PDF confermata).
 - **Da fare prossima sessione:** (1) **e2e reale utente** (crea rapportino live → scarica i 2 PDF, verifica fedeltà su stampa); (2) feedback su layout/campi; (3) **pre-consegna: azzerare fatture test + contatore** prima di Pietro.
+
+### 2026-06-05 — Sessione 7 (e2e conformità + e2e fattura + fix offline)
+
+- **Conformità e2e dal vivo: OK.** Utente ha creato rapportino live + scaricato i 2 PDF → "tutto perfetto". Modulo Conformità chiuso al 100%.
+- **e2e fattura (Task 7) dal vivo: OK** su tutti i passi (bozza senza numero → Emetti → `001/2026` → contatore Firestore → delete bozza no buco). Unico nodo: passo 5 offline.
+- **Bug offline trovato + fixato (2 commit):**
+  - Sintomo: offline → Emetti non emette (giusto) ma **nessun messaggio** e al rientro online la fattura si **auto-emetteva senza click** (violava decisione #15).
+  - Causa reale: `salvaSilenzioso` chiama `addDoc`/`updateDoc` (`lib/db/fatture.js`); **offline la promise di scrittura Firestore non si risolve** → resta appesa, la guardia dentro `emettiFattura` non veniva mai raggiunta, spinner infinito.
+  - Fix: **check `navigator.onLine` in cima a `emetti()`** (`pages/Fatture/EditorFattura.jsx`), PRIMA di toccare Firestore → messaggio immediato, niente scrittura appesa, niente auto-emit. Guardia in `services/progressivo.js` mantenuta come difesa-in-profondità (rete cade a metà transaction) + 1 test offline.
+  - **89 test verdi**, build OK, deploy GitHub Pages verde, ritest live utente: **funziona**.
+- **Lezione (offline-first Firestore):** le write offline NON rigettano né risolvono finché non torni online. Per azioni che richiedono rete (es. emissione numero) **guardare `navigator.onLine` PRIMA della prima scrittura**, non dopo.
+- **Da fare prossima sessione:** **pre-consegna** (su richiesta utente): azzerare fatture test + doc `contatori/{anno}` in Firestore prima di Pietro. Resto MVP completo e live.
