@@ -7,6 +7,9 @@ import ImportPage from './pages/Anagrafiche/ImportPage.jsx'
 import ListaFatture from './pages/Fatture/ListaFatture.jsx'
 import EditorFattura from './pages/Fatture/EditorFattura.jsx'
 import DettaglioFattura from './pages/Fatture/DettaglioFattura.jsx'
+import ListaConformita from './pages/Conformita/ListaConformita.jsx'
+import EditorConformita from './pages/Conformita/EditorConformita.jsx'
+import DettaglioConformita from './pages/Conformita/DettaglioConformita.jsx'
 
 export default function App() {
   const { user, loading } = useAuth()
@@ -22,6 +25,10 @@ export default function App() {
         <Route path="/fatture/nuova" element={<EditorFattura />} />
         <Route path="/fatture/:id" element={<DettaglioFattura />} />
         <Route path="/fatture/:id/modifica" element={<EditorFattura />} />
+        <Route path="/conformita" element={<ListaConformita />} />
+        <Route path="/conformita/nuova" element={<EditorConformita />} />
+        <Route path="/conformita/:id" element={<DettaglioConformita />} />
+        <Route path="/conformita/:id/modifica" element={<EditorConformita />} />
       </Routes>
     </BrowserRouter>
   )
