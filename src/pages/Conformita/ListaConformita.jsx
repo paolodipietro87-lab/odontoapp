@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { listAll } from '../../lib/db/conformita.js'
+import PageHeader from '../../components/PageHeader.jsx'
 
 export default function ListaConformita() {
   const [rows, setRows] = useState([])
@@ -20,8 +21,8 @@ export default function ListaConformita() {
   if (loading) return <p className="p-6">Caricamento…</p>
   return (
     <div className="p-6">
+      <PageHeader title="Conformità" />
       <div className="flex items-center gap-3 mb-4">
-        <h2 className="text-lg font-bold">Conformità</h2>
         <Link to="/conformita/nuova" className="bg-blue-600 text-white rounded px-3 py-1">Nuovo</Link>
         <input className="border rounded p-2 ml-auto w-64" placeholder="Cerca paziente/data…" value={q} onChange={(e) => setQ(e.target.value)} />
       </div>

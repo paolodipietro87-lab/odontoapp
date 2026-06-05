@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { parseAnagrafica, dedupByCod } from '../../services/excel.js'
 import { importRows } from '../../lib/db/anagrafiche.js'
+import PageHeader from '../../components/PageHeader.jsx'
 
 const KINDS = [
   { value: 'clienti', label: 'Clienti' },
@@ -43,7 +44,7 @@ export default function ImportPage() {
 
   return (
     <div className="p-6 max-w-3xl">
-      <h1 className="text-xl font-bold mb-4">Import anagrafiche</h1>
+      <PageHeader title="Import anagrafiche" />
 
       <label className="block mb-2 text-sm font-medium">Tipo</label>
       <select className="border rounded p-2 mb-4" value={kind}

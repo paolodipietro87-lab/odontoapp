@@ -1,7 +1,11 @@
 import { useEffect, useState } from 'react'
-import { useParams, Navigate, Link } from 'react-router-dom'
+import { useParams, Navigate } from 'react-router-dom'
 import { getOne } from '../../lib/db/fatture.js'
 import PulsanteScaricaPdf from '../../components/fatture/PulsanteScaricaPdf.jsx'
+import PulsanteCondividiPdf from '../../components/PulsanteCondividiPdf.jsx'
+import PageHeader from '../../components/PageHeader.jsx'
+import FatturaPDF from '../../templates/FatturaPDF.jsx'
+import { nomeFileFattura } from '../../utils/condivisione.js'
 
 export default function DettaglioFattura() {
   const { id } = useParams()
@@ -15,8 +19,7 @@ export default function DettaglioFattura() {
   const c = fattura.clienteSnapshot ?? {}
   return (
     <div className="p-6 max-w-3xl">
-      <Link to="/fatture" className="text-blue-600">← Fatture</Link>
-      <h2 className="text-xl font-bold my-3">Fattura {fattura.numeroFormattato}</h2>
+      <PageHeader title={`Fattura ${fattura.numeroFormattato}`} />
       <p>Data: {fattura.data}</p>
       <p className="mt-2 font-medium">{c.denominazione}</p>
       <p className="text-sm text-gray-600">{c.indirizzo} — {c.cap} {c.citta} ({c.prov})</p>
@@ -42,7 +45,14 @@ export default function DettaglioFattura() {
         <div>Bollo: € {Number(fattura.bollo ?? 0).toFixed(2)}</div>
         <div className="font-bold">Totale documento: € {Number(fattura.totale ?? 0).toFixed(2)}</div>
       </div>
-      <PulsanteScaricaPdf fattura={fattura} />
+      <div className="mt-4 flex gap-3 items-center">
+        <PulsanteScaricaPdf fattura={fattura} />
+        <PulsanteCondividiPdf
+          document={<FatturaPDF fattura={fattura} />}
+          fileName={nomeFileFattura(fattura)}
+          label="Condividi"
+        />
+      </div>
     </div>
   )
 }

@@ -7,6 +7,7 @@ import { calcolaTotali } from '../../utils/calcoli.js'
 import ClienteSelect from '../../components/ClienteSelect.jsx'
 import RigaFattura from '../../components/RigaFattura.jsx'
 import ConfirmDialog from '../../components/ConfirmDialog.jsx'
+import PageHeader from '../../components/PageHeader.jsx'
 
 const oggi = () => new Date().toISOString().slice(0, 10)
 const rigaVuota = () => ({ cod: '', descrizione: '', qta: 1, um: '', prezzo: 0, sconto: 0, iva: 'FC' })
@@ -69,7 +70,7 @@ export default function EditorFattura() {
 
   return (
     <div className="p-6 max-w-4xl">
-      <h2 className="text-lg font-bold mb-4">{id ? 'Modifica bozza' : 'Nuova fattura'}</h2>
+      <PageHeader title={id ? 'Modifica bozza' : 'Nuova fattura'} />
       <div className="grid grid-cols-2 gap-4 mb-4">
         <label className="block">Data
           <input type="date" className="border rounded p-2 w-full" value={fattura.data} onChange={(e) => setFattura((f) => ({ ...f, data: e.target.value }))} />
