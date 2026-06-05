@@ -8,11 +8,11 @@ export default function PageHeader({ title, children }) {
       <button
         type="button"
         onClick={() => nav(-1)}
-        className="rounded border px-3 py-1 text-sm hover:bg-gray-50"
+        className="rounded-lg border border-gray-300 px-3 py-2 text-sm hover:bg-gray-50"
       >← Indietro</button>
       <Link
         to="/"
-        className="rounded border px-3 py-1 text-sm hover:bg-gray-50"
+        className="rounded-lg border border-gray-300 px-3 py-2 text-sm hover:bg-gray-50"
       >🏠 Home</Link>
       {title && <h2 className="text-lg font-bold ml-2">{title}</h2>}
       {children}

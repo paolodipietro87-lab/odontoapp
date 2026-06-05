@@ -17,8 +17,8 @@ export default function Login() {
   }
 
   return (
-    <form onSubmit={onSubmit} className="max-w-sm mx-auto mt-20 flex flex-col gap-3 p-6">
-      <h1 className="text-xl font-bold">OdontoApp — Accedi</h1>
+    <form onSubmit={onSubmit} className="max-w-sm mx-auto mt-20 flex flex-col gap-3 p-6 bg-white rounded-xl border border-gray-200 shadow-sm">
+      <h1 className="text-2xl font-bold text-blue-700 mb-2">OdontoApp — Accedi</h1>
       <input className="border rounded p-2" type="email" placeholder="Email"
         value={email} onChange={(e) => setEmail(e.target.value)} />
       <input className="border rounded p-2" type="password" placeholder="Password"
