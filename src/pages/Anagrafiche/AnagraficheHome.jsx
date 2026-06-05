@@ -4,6 +4,7 @@ import ListaAnagrafica from './ListaAnagrafica.jsx'
 import RecordEditor from './RecordEditor.jsx'
 import { listColumns } from './schema.js'
 import { upsertOne } from '../../lib/db/anagrafiche.js'
+import PageHeader from '../../components/PageHeader.jsx'
 
 const TABS = [
   { kind: 'clienti', label: 'Clienti' },
@@ -30,8 +31,8 @@ export default function AnagraficheHome() {
 
   return (
     <div className="p-6">
+      <PageHeader title="Anagrafiche" />
       <div className="flex items-center justify-between mb-4">
-        <h1 className="text-xl font-bold">Anagrafiche</h1>
         <div className="flex items-center gap-4">
           {!inEditor && <button onClick={startNew} className="text-sm bg-blue-600 text-white rounded px-3 py-1">Nuovo</button>}
           <Link to="/anagrafiche/import" className="text-sm text-blue-600">Importa da Excel</Link>

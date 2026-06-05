@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { listAll } from '../../lib/db/fatture.js'
+import PageHeader from '../../components/PageHeader.jsx'
 
 export default function ListaFatture() {
   const [rows, setRows] = useState([])
@@ -20,8 +21,8 @@ export default function ListaFatture() {
   if (loading) return <p className="p-6">Caricamento…</p>
   return (
     <div className="p-6">
+      <PageHeader title="Fatture" />
       <div className="flex items-center gap-3 mb-4">
-        <h2 className="text-lg font-bold">Fatture</h2>
         <Link to="/fatture/nuova" className="bg-blue-600 text-white rounded px-3 py-1">Nuova</Link>
         <input className="border rounded p-2 ml-auto w-64" placeholder="Cerca…" value={q} onChange={(e) => setQ(e.target.value)} />
       </div>

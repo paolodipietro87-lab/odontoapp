@@ -5,6 +5,7 @@ import { crea, getOne, aggiorna, elimina } from '../../lib/db/conformita.js'
 import ClienteSelect from '../../components/ClienteSelect.jsx'
 import RigaMateriale from '../../components/conformita/RigaMateriale.jsx'
 import ConfirmDialog from '../../components/ConfirmDialog.jsx'
+import PageHeader from '../../components/PageHeader.jsx'
 
 const materialeVuoto = () => ({ tipo: '', fabbricante: '', modello: '', lotto: '' })
 const vuota = () => ({
@@ -46,7 +47,7 @@ export default function EditorConformita() {
 
   return (
     <div className="p-6 max-w-4xl">
-      <h2 className="text-lg font-bold mb-4">{id ? 'Modifica rapportino' : 'Nuovo rapportino'}</h2>
+      <PageHeader title={id ? 'Modifica rapportino' : 'Nuovo rapportino'} />
 
       <div className="grid grid-cols-2 gap-4 mb-4">
         <label className="block">Medico prescrivente

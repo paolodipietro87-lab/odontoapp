@@ -2,6 +2,10 @@ import { useEffect, useState } from 'react'
 import { useParams, Link } from 'react-router-dom'
 import { getOne } from '../../lib/db/conformita.js'
 import PulsanteScaricaPdfConformita from '../../components/conformita/PulsanteScaricaPdfConformita.jsx'
+import PulsanteCondividiPdf from '../../components/PulsanteCondividiPdf.jsx'
+import PageHeader from '../../components/PageHeader.jsx'
+import ConformitaPDF from '../../templates/ConformitaPDF.jsx'
+import { nomeFileConformita } from '../../utils/condivisione.js'
 
 export default function DettaglioConformita() {
   const { id } = useParams()
@@ -14,8 +18,7 @@ export default function DettaglioConformita() {
   const c = doc.clienteSnapshot ?? {}
   return (
     <div className="p-6 max-w-3xl">
-      <Link to="/conformita" className="text-blue-600">← Conformità</Link>
-      <h2 className="text-xl font-bold my-3">Rapportino — {doc.paziente}</h2>
+      <PageHeader title={`Rapportino — ${doc.paziente}`} />
       <p>Data: {doc.data} · Consegna: {doc.dataConsegna}</p>
       <p className="mt-2">Dispositivo: {doc.descrizioneDispositivo}</p>
       <p className="mt-2 font-medium">{c.denominazione}</p>
@@ -34,9 +37,19 @@ export default function DettaglioConformita() {
           ))}
         </tbody>
       </table>
-      <div className="flex gap-3 items-center">
+      <div className="flex gap-3 items-center flex-wrap">
         <PulsanteScaricaPdfConformita conformita={doc} intestazione label="Scarica PDF (per medico)" />
+        <PulsanteCondividiPdf
+          document={<ConformitaPDF conformita={doc} intestazione />}
+          fileName={nomeFileConformita(doc, true)}
+          label="Condividi (medico)"
+        />
         <PulsanteScaricaPdfConformita conformita={doc} intestazione={false} label="Scarica PDF (per paziente)" />
+        <PulsanteCondividiPdf
+          document={<ConformitaPDF conformita={doc} intestazione={false} />}
+          fileName={nomeFileConformita(doc, false)}
+          label="Condividi (paziente)"
+        />
         <Link to={`/conformita/${id}/modifica`} className="text-blue-600 ml-auto">Modifica</Link>
       </div>
     </div>

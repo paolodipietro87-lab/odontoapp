@@ -1,5 +1,6 @@
 import { render, screen, fireEvent, waitFor } from '@testing-library/react'
 import { describe, it, expect, vi } from 'vitest'
+import { MemoryRouter } from 'react-router-dom'
 
 vi.mock('../../../services/excel.js', () => ({
   parseAnagrafica: vi.fn(() => [
@@ -22,14 +23,14 @@ function uploadFile() {
 
 describe('ImportPage', () => {
   it('previews parsed rows after file upload', async () => {
-    render(<ImportPage />)
+    render(<MemoryRouter><ImportPage /></MemoryRouter>)
     uploadFile()
     await waitFor(() => expect(screen.getByText(/2 righe/i)).toBeInTheDocument())
     expect(screen.getByText(/Dott. CIARDELLI/)).toBeInTheDocument()
   })
 
   it('writes rows to Firestore on confirm', async () => {
-    render(<ImportPage />)
+    render(<MemoryRouter><ImportPage /></MemoryRouter>)
     uploadFile()
     await waitFor(() => screen.getByText(/2 righe/i))
     fireEvent.click(screen.getByRole('button', { name: /conferma import/i }))

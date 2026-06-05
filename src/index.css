@@ -1,3 +1,29 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@layer base {
+  :root {
+    /* "Comodo touch": base 16px, leggibile da telefono e per occhi non giovani */
+    font-size: 16px;
+  }
+
+  html {
+    font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+    -webkit-text-size-adjust: 100%;
+  }
+
+  body {
+    background-color: #F8FAFB; /* sfondo quasi-bianco */
+    color: #1F2933;           /* testo grigio scuro */
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* Controlli form comodi al tocco: altezza generosa, font 16px (no zoom iOS) */
+  input,
+  select,
+  textarea {
+    min-height: 44px;
+    font-size: 1rem;
+  }
+}
