@@ -56,7 +56,7 @@ export default function EditorFattura() {
       await emettiFattura(fid)
       nav(`/fatture/${fid}`)
     } catch (e) {
-      setError('Numerazione richiede connessione internet. La fattura resta in bozza. (' + e.message + ')')
+      setError(e.message + '. La fattura resta in bozza.')
     } finally { setBusy(false) }
   }
 

@@ -102,4 +102,15 @@ describe('emettiFattura (transaction)', () => {
     const { emettiFattura } = await import('../progressivo.js')
     await expect(emettiFattura('nope')).rejects.toThrow(/inesistente/i)
   })
+
+  it('refuses to emit while offline, counter untouched', async () => {
+    const { emettiFattura } = await import('../progressivo.js')
+    seedFattura('f', '2026-06-01')
+    const spy = vi.spyOn(navigator, 'onLine', 'get').mockReturnValue(false)
+    try {
+      await expect(emettiFattura('f')).rejects.toThrow(/connessione/i)
+      expect(mem.docs['contatori/2026']).toBeUndefined()
+      expect(mem.docs['fatture/f'].stato).toBe('bozza')
+    } finally { spy.mockRestore() }
+  })
 })

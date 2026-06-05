@@ -6,6 +6,9 @@ export function formattaNumero(numero, anno) {
 }
 
 export async function emettiFattura(fatturaId) {
+  if (typeof navigator !== 'undefined' && navigator.onLine === false) {
+    throw new Error('Serve connessione internet per emettere il numero')
+  }
   return runTransaction(db, async (tx) => {
     const fatturaRef = doc(db, 'fatture', fatturaId)
     const fatturaSnap = await tx.get(fatturaRef)
