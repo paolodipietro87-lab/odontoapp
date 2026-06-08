@@ -28,7 +28,7 @@ export default function RigaFattura({ riga, prodotti, onChange, onRemove }) {
         <Autocomplete value={riga.cod ?? ''} options={optsCod} onChangeText={(t) => set('cod', t)} onSelect={(o) => fillFromProdotto(o.raw)} className="border rounded p-1 w-24" />
       </td>
       <td className="p-1 align-top">
-        <Autocomplete value={riga.descrizione ?? ''} options={optsDesc} onChangeText={(t) => set('descrizione', t)} onSelect={(o) => fillFromProdotto(o.raw)} className="border rounded p-1 w-full" />
+        <Autocomplete value={riga.descrizione ?? ''} options={optsDesc} onChangeText={(t) => set('descrizione', t)} onSelect={(o) => fillFromProdotto(o.raw)} className="border rounded p-1 w-full min-w-[18rem]" />
       </td>
       <td className="p-1 align-top"><input type="number" step="any" className="border rounded p-1 w-16" value={riga.qta ?? ''} onChange={(e) => set('qta', e.target.value, true)} /></td>
       <td className="p-1 align-top"><input className="border rounded p-1 w-12" value={riga.um ?? ''} onChange={(e) => set('um', e.target.value)} /></td>

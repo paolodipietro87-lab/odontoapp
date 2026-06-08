@@ -32,7 +32,7 @@ export default function Autocomplete({
   return (
     <div className="relative">
       <input
-        className={className}
+        className={`${className} pr-7`}
         placeholder={placeholder}
         value={value}
         onChange={(e) => { onChangeText(e.target.value); setOpen(true); setHi(0) }}
@@ -40,6 +40,16 @@ export default function Autocomplete({
         onBlur={() => setTimeout(() => setOpen(false), 150)}
         onKeyDown={onKeyDown}
       />
+      {value && (
+        <button
+          type="button"
+          aria-label="Cancella"
+          className="absolute right-1 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-700 px-1"
+          onMouseDown={(e) => { e.preventDefault(); onChangeText(''); setOpen(false) }}
+        >
+          ✕
+        </button>
+      )}
       {open && filtered.length > 0 && (
         <ul className="absolute z-20 left-0 mt-1 min-w-full w-max max-w-[20rem] max-h-60 overflow-auto bg-white border rounded shadow-lg">
           {filtered.map((o, i) => (
