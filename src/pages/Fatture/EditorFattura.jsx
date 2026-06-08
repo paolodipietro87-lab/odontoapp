@@ -22,6 +22,7 @@ export default function EditorFattura() {
   const [busy, setBusy] = useState(false)
   const [confirmEmetti, setConfirmEmetti] = useState(false)
   const [warnCrono, setWarnCrono] = useState(null)
+  const [warnCrono2, setWarnCrono2] = useState(false)
 
   useEffect(() => { listAnagrafica('prodotti').then(setProdotti) }, [])
   useEffect(() => {
@@ -71,7 +72,7 @@ export default function EditorFattura() {
   }
 
   async function doEmetti() {
-    setWarnCrono(null); setError(''); setBusy(true)
+    setWarnCrono(null); setWarnCrono2(false); setError(''); setBusy(true)
     try {
       const fid = await salvaSilenzioso()
       await emettiFattura(fid)
@@ -133,8 +134,16 @@ export default function EditorFattura() {
         <ConfirmDialog
           message={`⚠️ Attenzione cronologia. Stai emettendo con data ${formatDataIt(fattura.data)}, precedente all'ultima fattura emessa (${warnCrono.ultimoNumeroFormattato} del ${formatDataIt(warnCrono.ultimaData)}). La numerazione non sarà cronologica e potrebbe creare problemi col commercialista. Emettere comunque?`}
           confirmLabel="Emetti comunque"
-          onConfirm={doEmetti}
+          onConfirm={() => { setWarnCrono(null); setWarnCrono2(true) }}
           onCancel={() => setWarnCrono(null)}
+        />
+      )}
+      {warnCrono2 && (
+        <ConfirmDialog
+          message={"⚠️ Operazione fiscalmente errata. Emettere una fattura con numero più alto ma data precedente viola l'obbligo di numerazione progressiva cronologica (DPR 633/72). Può causare contestazioni e problemi col commercialista. Consigliato: annullare e correggere la data. Confermi di voler emettere comunque, assumendoti la responsabilità?"}
+          confirmLabel="Confermo, emetti"
+          onConfirm={doEmetti}
+          onCancel={() => setWarnCrono2(false)}
         />
       )}
     </div>
