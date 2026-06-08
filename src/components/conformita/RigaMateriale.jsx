@@ -18,7 +18,7 @@ export default function RigaMateriale({ riga, prodotti, onChange, onRemove }) {
     () => prodotti.map((p) => ({
       key: p.id,
       label: p.descrizione ?? '',
-      detail: [p.cod, p.produttore].filter(Boolean).join(' — '),
+      detail: [p.cod, p.produttore, p.categoria].filter(Boolean).join(' — '),
       raw: p,
     })),
     [prodotti],
