@@ -1,5 +1,6 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { listAll } from '../lib/db/anagrafiche.js'
+import Autocomplete from './Autocomplete.jsx'
 
 const SNAP_FIELDS = ['denominazione', 'indirizzo', 'cap', 'citta', 'prov', 'cf', 'piva']
 
@@ -10,6 +11,14 @@ function toSnapshot(c) {
 }
 
 const labelOf = (c) => c.denominazione || c.cod
+
+function detailOf(c) {
+  const luogo = [c.indirizzo, [c.cap, c.citta].filter(Boolean).join(' '), c.prov && `(${c.prov})`]
+    .filter(Boolean)
+    .join(', ')
+  const piva = c.piva ? `P.IVA ${c.piva}` : c.cf ? `C.F. ${c.cf}` : ''
+  return [c.cod, luogo, piva].filter(Boolean).join(' — ')
+}
 
 export default function ClienteSelect({ value, onChange }) {
   const [clienti, setClienti] = useState([])
@@ -24,32 +33,30 @@ export default function ClienteSelect({ value, onChange }) {
     if (c) setText(labelOf(c))
   }, [value, clienti])
 
-  function handle(t) {
+  const options = useMemo(
+    () => clienti.map((c) => ({ key: c.id, label: labelOf(c), detail: detailOf(c), raw: c })),
+    [clienti],
+  )
+
+  function onSelect(opt) {
+    const c = opt.raw
+    setText(labelOf(c))
+    onChange({ clienteId: c.id, clienteSnapshot: toSnapshot(c) })
+  }
+
+  function onChangeText(t) {
     setText(t)
-    const c = clienti.find((x) => labelOf(x) === t || x.cod === t)
-    onChange(
-      c
-        ? { clienteId: c.id, clienteSnapshot: toSnapshot(c) }
-        : { clienteId: null, clienteSnapshot: null },
-    )
+    // Free typing without a pick = no cliente selezionato (impedisce snapshot incoerenti)
+    onChange({ clienteId: null, clienteSnapshot: null })
   }
 
   return (
-    <>
-      <input
-        list="clienti-list"
-        className="border rounded p-2 w-full"
-        placeholder="Cerca cliente…"
-        value={text}
-        onChange={(e) => handle(e.target.value)}
-      />
-      <datalist id="clienti-list">
-        {clienti.map((c) => (
-          <option key={c.id} value={labelOf(c)}>
-            {c.cod} {c.citta ? `— ${c.citta}` : ''}
-          </option>
-        ))}
-      </datalist>
-    </>
+    <Autocomplete
+      value={text}
+      onChangeText={onChangeText}
+      onSelect={onSelect}
+      options={options}
+      placeholder="Cerca cliente…"
+    />
   )
 }

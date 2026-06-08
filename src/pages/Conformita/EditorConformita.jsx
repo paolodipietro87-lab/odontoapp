@@ -82,9 +82,6 @@ export default function EditorConformita() {
         </label>
       </div>
 
-      <datalist id="prodotti-materiale-list">
-        {prodotti.map((p) => <option key={p.id} value={p.descrizione}>{p.cod}</option>)}
-      </datalist>
       <h3 className="font-bold mb-2">Materiali</h3>
       <table className="w-full text-sm mb-2">
         <thead className="bg-gray-50"><tr>

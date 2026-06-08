@@ -80,12 +80,6 @@ export default function EditorFattura() {
         </label>
       </div>
 
-      <datalist id="prodotti-list">
-        {prodotti.map((p) => <option key={p.id} value={p.cod}>{p.descrizione}</option>)}
-      </datalist>
-      <datalist id="prodotti-desc-list">
-        {prodotti.map((p) => <option key={p.id} value={p.descrizione}>{p.cod}</option>)}
-      </datalist>
       <table className="w-full text-sm mb-2">
         <thead className="bg-gray-50"><tr>
           <th className="p-1 text-left">Cod</th><th className="p-1 text-left">Descrizione</th>
