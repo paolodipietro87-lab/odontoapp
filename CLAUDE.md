@@ -1,7 +1,7 @@
 # CLAUDE.md — Progetto OdontoApp
 
 > Cervello del progetto. Aggiornare a ogni sessione conclusa.
-> Ultima modifica: 2026-06-05 (sessione 8)
+> Ultima modifica: 2026-06-08 (sessione 9)
 
 ---
 
@@ -286,3 +286,17 @@ odoapp/
   - **Icona PWA = molare** bianco su tondo teal. Sorgente versionato `scripts/molar.svg` + `scripts/gen-icons.mjs` (rasterizza con **sharp** → `public/icon-192/512.png` + `favicon.svg`). Rigenera: `node scripts/gen-icons.mjs`. Manifest `theme/background_color` teal, icone `purpose: any maskable`, `<meta theme-color>` in index.html.
 - **98 test verdi**, build verde, deploy GitHub Pages verde.
 - **Da fare prossima sessione:** (1) **e2e utente da telefono** (icona installata, Condividi nativo, teal/touch su mobile) → feedback; (2) eventuali altre rifiniture; (3) resta in sospeso il **pre-consegna** (azzerare fatture+contatore prima di Pietro).
+
+### 2026-06-08 — Sessione 9 (rifiniture: combobox uniforme + data IT + guardia cronologia)
+
+- E2e mobile sessione 8 OK ("tutto bene"). Continuo fase rifiniture su feedback utente. Tutto su `main`, deploy verde a ogni voce.
+- **Combobox custom uniforme PC/mobile.** Sostituito `<datalist>` nativo (su mobile comportamento incoerente) con componente riusabile `components/Autocomplete.jsx` (tendina nostra, identica ovunque, tastiera frecce/Invio/Esc + tocco). Filtro = `utils/autocomplete.js` `filtraOpzioni` (puro, **7 test**). Consumatori: `ClienteSelect`, `RigaFattura` (cod+descrizione), `conformita/RigaMateriale` (tipo). Rimossi datalist da Editor Fattura/Conformità.
+- **Dettagli ricchi nelle tendine** (richiesta utente): cliente → cod, indirizzo, CAP+città, prov, P.IVA/CF; prodotto → descrizione/cod + **produttore** + **categoria** + listino.
+- **Pulsante ✕ clear** dentro l'Autocomplete (appare se c'è testo) → svuota il campo. Campi **Descrizione** (fattura) e **Tipo** (conformità) allargati (`min-w-[18rem]`).
+- **Excel prodotti colonne F/G/H confermate** all'utente: `Cod. Udm`→`um`, `Cod. Iva`→`codIva` (conservato, non incide: regime tutto FC), `Listino 1`→`listino1` (prezzo). Mapping per **nome header**, non per lettera. UM è solo etichetta (pz/ore/unità) → non entra nei calcoli, importo = qta×prezzo×(1−sconto%) corretto a prescindere.
+- **Data fattura nel PDF in formato italiano.** Storage resta ISO `AAAA-MM-GG` (serve per anno progressivo, `data.slice(0,4)`); aggiunto `formatDataIt` in `templates/fattura.format.js`, usato solo in stampa (`fatturaToProps`). **3 test**. Prima usciva ISO sul PDF.
+- **Guardia cronologia emissione (fiscale).** `services/progressivo.js`: contatore ora salva anche `ultimaData` + `ultimoNumeroFormattato`; nuovi `dataPrecedente` (puro) e `getUltimaEmessa(anno)`. In `EditorFattura.emetti()`: pre-check dopo guardia offline → se `dataPrecedente(data, ultimaData)` mostra **doppio avviso** (1° cronologia, 2° "operazione fiscalmente errata, DPR 633/72") prima di bruciare il numero. Entrambi i dialog con bottone **"Torna a modifica"** (prop `cancelLabel` aggiunta a `ConfirmDialog`). Check best-effort: se la lettura fallisce, si procede. **+6 test** (dataPrecedente, getUltimaEmessa, ultimaData nel contatore).
+  - **Nota:** le fatture emesse PRIMA di questo deploy non hanno `ultimaData` nel contatore → la guardia entra a pieno dalla prima nuova emissione (che scrive il dato). Il pre-consegna (reset contatore) azzera tutto comunque.
+- **Consulenza fiscale data fattura** (orientamento, non sostituisce commercialista): data = data operazione/consegna; emettere in ordine di data crescente; non retrodatare in anno chiuso; anni diversi = contatori separati automatici. Il rischio #1 (numero alto + data precedente) ora è coperto dalla guardia.
+- **114 test verdi**, build verde, deploy GitHub Pages verde (più commit, uno per voce).
+- **Da fare prossima sessione:** (1) e2e utente delle nuove rifiniture da telefono (combobox, clear, avvisi); (2) eventuali altre QoL; (3) **pre-consegna** ancora in sospeso (azzerare collection `fatture` + doc `contatori/{anno}` prima di Pietro).
