@@ -1,10 +1,14 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest'
-import { formattaNumero } from '../progressivo.js'
+import { formattaNumero, dataPrecedente } from '../progressivo.js'
 
 const mem = { docs: {}, onBeforeRun: null }
 
 vi.mock('firebase/firestore', () => ({
   doc: (db, coll, id) => ({ path: `${coll}/${id}` }),
+  getDoc: async (ref) => ({
+    exists: () => mem.docs[ref.path] !== undefined,
+    data: () => mem.docs[ref.path],
+  }),
   serverTimestamp: () => 'TS',
   runTransaction: async (db, updateFn) => {
     if (mem.onBeforeRun) { mem.onBeforeRun(); mem.onBeforeRun = null }
@@ -39,6 +43,40 @@ describe('formattaNumero', () => {
   })
   it('keeps 4+ digit numbers as-is', () => {
     expect(formattaNumero(1234, 2026)).toBe('1234/2026')
+  })
+})
+
+describe('dataPrecedente', () => {
+  it('true se nuova data prima della ultima', () => {
+    expect(dataPrecedente('2026-03-05', '2026-03-10')).toBe(true)
+  })
+  it('false se uguale o successiva', () => {
+    expect(dataPrecedente('2026-03-10', '2026-03-10')).toBe(false)
+    expect(dataPrecedente('2026-03-11', '2026-03-10')).toBe(false)
+  })
+  it('false con dati mancanti', () => {
+    expect(dataPrecedente('', '2026-03-10')).toBe(false)
+    expect(dataPrecedente('2026-03-10', '')).toBe(false)
+  })
+})
+
+describe('getUltimaEmessa', () => {
+  beforeEach(() => { mem.docs = {} })
+  it('null se nessuna emessa per l anno', async () => {
+    const { getUltimaEmessa } = await import('../progressivo.js')
+    expect(await getUltimaEmessa(2026)).toBeNull()
+  })
+  it('ritorna ultimaData e numero dal contatore', async () => {
+    const { getUltimaEmessa } = await import('../progressivo.js')
+    mem.docs['contatori/2026'] = { ultimoNumero: 3, ultimaData: '2026-03-10', ultimoNumeroFormattato: '003/2026' }
+    expect(await getUltimaEmessa(2026)).toEqual({ ultimaData: '2026-03-10', ultimoNumeroFormattato: '003/2026' })
+  })
+  it('emettiFattura registra ultimaData nel contatore', async () => {
+    const { emettiFattura } = await import('../progressivo.js')
+    seedFattura('f1', '2026-03-10')
+    await emettiFattura('f1')
+    expect(mem.docs['contatori/2026'].ultimaData).toBe('2026-03-10')
+    expect(mem.docs['contatori/2026'].ultimoNumeroFormattato).toBe('001/2026')
   })
 })
 

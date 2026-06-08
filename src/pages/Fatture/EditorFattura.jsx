@@ -2,12 +2,13 @@ import { useEffect, useMemo, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 import { listAll as listAnagrafica } from '../../lib/db/anagrafiche.js'
 import { creaBozza, getOne, aggiornaBozza, deleteBozza } from '../../lib/db/fatture.js'
-import { emettiFattura } from '../../services/progressivo.js'
+import { emettiFattura, getUltimaEmessa, dataPrecedente } from '../../services/progressivo.js'
 import { calcolaTotali } from '../../utils/calcoli.js'
 import ClienteSelect from '../../components/ClienteSelect.jsx'
 import RigaFattura from '../../components/RigaFattura.jsx'
 import ConfirmDialog from '../../components/ConfirmDialog.jsx'
 import PageHeader from '../../components/PageHeader.jsx'
+import { formatDataIt } from '../../templates/fattura.format.js'
 
 const oggi = () => new Date().toISOString().slice(0, 10)
 const rigaVuota = () => ({ cod: '', descrizione: '', qta: 1, um: '', prezzo: 0, sconto: 0, iva: 'FC' })
@@ -20,6 +21,7 @@ export default function EditorFattura() {
   const [error, setError] = useState('')
   const [busy, setBusy] = useState(false)
   const [confirmEmetti, setConfirmEmetti] = useState(false)
+  const [warnCrono, setWarnCrono] = useState(null)
 
   useEffect(() => { listAnagrafica('prodotti').then(setProdotti) }, [])
   useEffect(() => {
@@ -56,7 +58,20 @@ export default function EditorFattura() {
       setError('Serve connessione internet per emettere il numero. La fattura resta in bozza.')
       return
     }
-    setBusy(true)
+    // Guardia cronologia: blocca date precedenti all'ultima emessa dell'anno
+    try {
+      const anno = Number(String(fattura.data).slice(0, 4))
+      const ultima = anno ? await getUltimaEmessa(anno) : null
+      if (ultima && dataPrecedente(fattura.data, ultima.ultimaData)) {
+        setWarnCrono(ultima)
+        return
+      }
+    } catch { /* check best-effort: se fallisce la lettura, si procede */ }
+    doEmetti()
+  }
+
+  async function doEmetti() {
+    setWarnCrono(null); setError(''); setBusy(true)
     try {
       const fid = await salvaSilenzioso()
       await emettiFattura(fid)
@@ -112,6 +127,14 @@ export default function EditorFattura() {
           confirmLabel="Emetti"
           onConfirm={emetti}
           onCancel={() => setConfirmEmetti(false)}
+        />
+      )}
+      {warnCrono && (
+        <ConfirmDialog
+          message={`⚠️ Attenzione cronologia. Stai emettendo con data ${formatDataIt(fattura.data)}, precedente all'ultima fattura emessa (${warnCrono.ultimoNumeroFormattato} del ${formatDataIt(warnCrono.ultimaData)}). La numerazione non sarà cronologica e potrebbe creare problemi col commercialista. Emettere comunque?`}
+          confirmLabel="Emetti comunque"
+          onConfirm={doEmetti}
+          onCancel={() => setWarnCrono(null)}
         />
       )}
     </div>
