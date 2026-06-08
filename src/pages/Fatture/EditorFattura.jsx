@@ -134,6 +134,7 @@ export default function EditorFattura() {
         <ConfirmDialog
           message={`⚠️ Attenzione cronologia. Stai emettendo con data ${formatDataIt(fattura.data)}, precedente all'ultima fattura emessa (${warnCrono.ultimoNumeroFormattato} del ${formatDataIt(warnCrono.ultimaData)}). La numerazione non sarà cronologica e potrebbe creare problemi col commercialista. Emettere comunque?`}
           confirmLabel="Emetti comunque"
+          cancelLabel="Torna a modifica"
           onConfirm={() => { setWarnCrono(null); setWarnCrono2(true) }}
           onCancel={() => setWarnCrono(null)}
         />
@@ -142,6 +143,7 @@ export default function EditorFattura() {
         <ConfirmDialog
           message={"⚠️ Operazione fiscalmente errata. Emettere una fattura con numero più alto ma data precedente viola l'obbligo di numerazione progressiva cronologica (DPR 633/72). Può causare contestazioni e problemi col commercialista. Consigliato: annullare e correggere la data. Confermi di voler emettere comunque, assumendoti la responsabilità?"}
           confirmLabel="Confermo, emetti"
+          cancelLabel="Torna a modifica"
           onConfirm={doEmetti}
           onCancel={() => setWarnCrono2(false)}
         />
