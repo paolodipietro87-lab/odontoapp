@@ -13,6 +13,13 @@ export function formatPrezzo(n) {
   return `€ ${eurFmt(3).format(Number(n) || 0)}`
 }
 
+// ISO 'AAAA-MM-GG' (storage) -> 'GG/MM/AAAA' (stampa italiana).
+// Tollera stringa già italiana o vuota: la restituisce invariata.
+export function formatDataIt(s) {
+  const m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(String(s ?? ''))
+  return m ? `${m[3]}/${m[2]}/${m[1]}` : (s ?? '')
+}
+
 export function quantitaLabel(qta, um) {
   return `${qta}${um ?? ''}`
 }
@@ -35,7 +42,7 @@ export function fatturaToProps(doc) {
   const destinazione = anagraficaToProps(risolviDestinazione(doc))
   return {
     numero: doc.numeroFormattato ?? '',
-    data: doc.data ?? '',
+    data: formatDataIt(doc.data),
     pagamento: doc.pagamento ?? '',
     scadenze: doc.scadenze ?? null,
     destinatario,

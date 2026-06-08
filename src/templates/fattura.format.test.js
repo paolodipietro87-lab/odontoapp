@@ -1,7 +1,20 @@
 import { describe, it, expect } from 'vitest'
 import {
-  formatEuro, formatPrezzo, quantitaLabel, risolviDestinazione, fatturaToProps,
+  formatEuro, formatPrezzo, formatDataIt, quantitaLabel, risolviDestinazione, fatturaToProps,
 } from './fattura.format.js'
+
+describe('formatDataIt', () => {
+  it('converte ISO in formato italiano', () => {
+    expect(formatDataIt('2024-12-29')).toBe('29/12/2024')
+  })
+  it('lascia invariata una data già italiana', () => {
+    expect(formatDataIt('29/12/2024')).toBe('29/12/2024')
+  })
+  it('tollera vuoto/null', () => {
+    expect(formatDataIt('')).toBe('')
+    expect(formatDataIt(null)).toBe('')
+  })
+})
 
 describe('formatEuro', () => {
   it('formatta con virgola e due decimali', () => {
