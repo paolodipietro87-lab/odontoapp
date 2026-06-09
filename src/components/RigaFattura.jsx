@@ -13,11 +13,11 @@ export default function RigaFattura({ riga, prodotti, onChange, onRemove }) {
   }
 
   const optsCod = useMemo(
-    () => prodotti.map((p) => ({ key: p.id, label: p.cod ?? '', detail: [p.descrizione, p.produttore, p.categoria, prezzoLabel(p)].filter(Boolean).join(' — '), raw: p })),
+    () => prodotti.map((p) => ({ key: p.id, label: p.cod ?? '', detail: [p.descrizione, p.produttore, p.categoria, p.sottocategoria, prezzoLabel(p)].filter(Boolean).join(' — '), raw: p })),
     [prodotti],
   )
   const optsDesc = useMemo(
-    () => prodotti.map((p) => ({ key: p.id, label: p.descrizione ?? '', detail: [p.cod, p.produttore, p.categoria, prezzoLabel(p)].filter(Boolean).join(' — '), raw: p })),
+    () => prodotti.map((p) => ({ key: p.id, label: p.descrizione ?? '', detail: [p.cod, p.produttore, p.categoria, p.sottocategoria, prezzoLabel(p)].filter(Boolean).join(' — '), raw: p })),
     [prodotti],
   )
 
