@@ -60,13 +60,13 @@ export default function EditorConformita() {
           <input className="border rounded p-2 w-full" value={doc.descrizioneDispositivo} onChange={(e) => set('descrizioneDispositivo', e.target.value)} />
         </label>
         <label className="block">Prescrizione medica del
-          <input className="border rounded p-2 w-full" value={doc.prescrizioneMedicaDel} onChange={(e) => set('prescrizioneMedicaDel', e.target.value)} />
+          <input type="date" className="border rounded p-2 w-full" value={doc.prescrizioneMedicaDel} onChange={(e) => set('prescrizioneMedicaDel', e.target.value)} />
         </label>
         <label className="block">Data
-          <input className="border rounded p-2 w-full" value={doc.data} onChange={(e) => set('data', e.target.value)} />
+          <input type="date" className="border rounded p-2 w-full" value={doc.data} onChange={(e) => set('data', e.target.value)} />
         </label>
         <label className="block">Data consegna
-          <input className="border rounded p-2 w-full" value={doc.dataConsegna} onChange={(e) => set('dataConsegna', e.target.value)} />
+          <input type="date" className="border rounded p-2 w-full" value={doc.dataConsegna} onChange={(e) => set('dataConsegna', e.target.value)} />
         </label>
         <label className="block">Termini per l'utilizzazione (giorni)
           <input className="border rounded p-2 w-full" value={doc.terminiUtilizzazione} onChange={(e) => set('terminiUtilizzazione', e.target.value)} />

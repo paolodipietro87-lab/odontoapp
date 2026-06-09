@@ -63,6 +63,21 @@ describe('conformitaToProps', () => {
   })
 })
 
+describe('date formattate in italiano nel PDF', () => {
+  it('converte le date ISO in GG/MM/AAAA', () => {
+    const p = conformitaToProps({ data: '2026-05-12', dataConsegna: '2026-05-20', prescrizioneMedicaDel: '2026-05-01' })
+    expect(p.data).toBe('12/05/2026')
+    expect(p.dataConsegna).toBe('20/05/2026')
+    expect(p.prescrizioneMedicaDel).toBe('01/05/2026')
+  })
+  it('lascia invariato il testo non-ISO (conformità vecchie)', () => {
+    const p = conformitaToProps({ data: '11-11-21', dataConsegna: '', prescrizioneMedicaDel: 'a vista' })
+    expect(p.data).toBe('11-11-21')
+    expect(p.dataConsegna).toBe('')
+    expect(p.prescrizioneMedicaDel).toBe('a vista')
+  })
+})
+
 describe('materiali nel PDF non includono dati magazzino', () => {
   it('pulisciMateriali scarta qta e prodottoId', () => {
     const out = pulisciMateriali([{ tipo: 'Resina', fabbricante: 'Ivoclar', modello: 'X', lotto: 'L1', qta: 5, prodottoId: 'P1' }])

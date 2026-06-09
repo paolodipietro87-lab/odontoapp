@@ -1,4 +1,5 @@
 // Formatter puri per il PDF conformità. Niente JSX → unit-testabile.
+import { formatDataIt } from './fattura.format.js'
 
 function anagraficaToProps(a = {}) {
   return {
@@ -22,9 +23,9 @@ export function pulisciMateriali(materiali = []) {
 
 export function conformitaToProps(doc) {
   return {
-    data: doc.data ?? '',
-    dataConsegna: doc.dataConsegna ?? '',
-    prescrizioneMedicaDel: doc.prescrizioneMedicaDel ?? '',
+    data: formatDataIt(doc.data ?? ''),
+    dataConsegna: formatDataIt(doc.dataConsegna ?? ''),
+    prescrizioneMedicaDel: formatDataIt(doc.prescrizioneMedicaDel ?? ''),
     paziente: (doc.paziente ?? '').trim(),
     descrizioneDispositivo: doc.descrizioneDispositivo ?? '',
     terminiUtilizzazione: doc.terminiUtilizzazione ?? '',
