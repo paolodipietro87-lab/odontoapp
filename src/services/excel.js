@@ -71,6 +71,8 @@ export function mapProdottoRow(row) {
     codFornitore: text(pick(row, 'Cod. fornitore')),
     fornitore: text(pick(row, 'Fornitore')),
     prezzoForn: numOrNull(pick(row, 'Prezzo forn.')),
+    // Magazzino
+    qtaDisponibile: numOrNull(pick(row, 'Q.tà disponibile')),
   }
 }
 

@@ -1,11 +1,13 @@
 import { Link } from 'react-router-dom'
 import SyncStatusBadge from '../components/SyncStatusBadge.jsx'
 import { logout } from '../lib/auth.js'
+import MagazzinoReminder from '../components/MagazzinoReminder.jsx'
 
 const SEZIONI = [
   { to: '/fatture', label: 'Fatture', desc: 'Crea ed emetti fatture' },
-  { to: '/conformita', label: 'Conformità', desc: 'Rapportini d’intervento' },
+  { to: '/conformita', label: 'Conformità', desc: "Rapportini d'intervento" },
   { to: '/anagrafiche', label: 'Anagrafiche', desc: 'Clienti, fornitori, prodotti' },
+  { to: '/magazzino', label: 'Magazzino', desc: 'Giacenze e carico prodotti' },
 ]
 
 export default function Home() {
@@ -18,7 +20,8 @@ export default function Home() {
           <button className="text-sm text-blue-600 underline" onClick={() => logout()}>Esci</button>
         </div>
       </header>
-      <nav className="grid gap-4 sm:grid-cols-3">
+      <MagazzinoReminder />
+      <nav className="grid gap-4 sm:grid-cols-2">
         {SEZIONI.map((s) => (
           <Link
             key={s.to}

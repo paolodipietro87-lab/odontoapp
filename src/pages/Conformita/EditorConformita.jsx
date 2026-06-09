@@ -7,7 +7,7 @@ import RigaMateriale from '../../components/conformita/RigaMateriale.jsx'
 import ConfirmDialog from '../../components/ConfirmDialog.jsx'
 import PageHeader from '../../components/PageHeader.jsx'
 
-const materialeVuoto = () => ({ tipo: '', fabbricante: '', modello: '', lotto: '' })
+const materialeVuoto = () => ({ tipo: '', fabbricante: '', modello: '', lotto: '', qta: '', prodottoId: null })
 const vuota = () => ({
   data: '', dataConsegna: '', prescrizioneMedicaDel: '',
   clienteId: null, clienteSnapshot: null, paziente: '',
@@ -86,7 +86,7 @@ export default function EditorConformita() {
       <table className="w-full text-sm mb-2">
         <thead className="bg-gray-50"><tr>
           <th className="p-1 text-left">Tipo</th><th className="p-1 text-left">Fabbricante</th>
-          <th className="p-1 text-left">Modello</th><th className="p-1 text-left">Lotto</th><th></th>
+          <th className="p-1 text-left">Modello</th><th className="p-1 text-left">Lotto</th><th className="p-1 text-left">Q.tà</th><th></th>
         </tr></thead>
         <tbody>
           {doc.materiali.map((m, i) => (

@@ -122,6 +122,17 @@ describe('mapProdottoRow', () => {
   })
 })
 
+describe('mapProdottoRow qtaDisponibile', () => {
+  it('legge la Q.tà disponibile dalla colonna AJ', () => {
+    const r = mapProdottoRow({ 'Cod.': 'P1', 'Descrizione': 'Resina', 'Q.tà disponibile': 12 })
+    expect(r.qtaDisponibile).toBe(12)
+  })
+  it('qtaDisponibile null se vuota', () => {
+    const r = mapProdottoRow({ 'Cod.': 'P2', 'Descrizione': 'X' })
+    expect(r.qtaDisponibile).toBeNull()
+  })
+})
+
 describe('dedupByCod', () => {
   it('keeps one row per cod, last wins', () => {
     const rows = [
