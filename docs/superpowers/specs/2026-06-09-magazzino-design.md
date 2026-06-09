@@ -56,7 +56,7 @@ Più micro-feature: Sottocategoria nelle tendine prodotto.
 - `components/conformita/RigaMateriale.jsx` — + colonna **Quantità** (input number) +
   salva `prodottoId` in `fillFromProdotto` (p.id). Header tabella materiali: + "Q.tà".
 - `pages/Conformita/DettaglioConformita.jsx` — + bottone **"Conferma scarico"**:
-  chiama `scaricaConformita`, disabilitato/avviso se `doc.scaritata` (mostra "Già scaricato").
+  chiama `scaricaConformita`, disabilitato/avviso se `doc.scaricata` (mostra "Già scaricato").
 - `components/MagazzinoReminder.jsx` (Home) — banner prodotti esauriti (`disp<=0`, no Servizio).
   Nessun esaurito → niente banner.
 - `pages/Home` — + card "Magazzino" + render `<MagazzinoReminder/>`.
