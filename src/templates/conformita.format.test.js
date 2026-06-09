@@ -62,3 +62,15 @@ describe('conformitaToProps', () => {
     expect(p.denominazione).toBe('')
   })
 })
+
+describe('materiali nel PDF non includono dati magazzino', () => {
+  it('pulisciMateriali scarta qta e prodottoId', () => {
+    const out = pulisciMateriali([{ tipo: 'Resina', fabbricante: 'Ivoclar', modello: 'X', lotto: 'L1', qta: 5, prodottoId: 'P1' }])
+    expect(out).toEqual([{ tipo: 'Resina', fabbricante: 'Ivoclar', modello: 'X', lotto: 'L1' }])
+  })
+  it('conformitaToProps non espone qta/prodottoId', () => {
+    const props = conformitaToProps({ materiali: [{ tipo: 'A', qta: 2, prodottoId: 'P' }] })
+    expect(props.materiali[0]).not.toHaveProperty('qta')
+    expect(props.materiali[0]).not.toHaveProperty('prodottoId')
+  })
+})
