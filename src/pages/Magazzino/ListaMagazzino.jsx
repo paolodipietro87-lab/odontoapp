@@ -23,10 +23,9 @@ export default function ListaMagazzino() {
   const [error, setError] = useState('')
 
   function reload() {
-    setLoading(true)
-    listAll('prodotti').then((d) => { setRows(filtroMagazzino(d)); setLoading(false) })
+    return listAll('prodotti').then((d) => setRows(filtroMagazzino(d)))
   }
-  useEffect(() => { reload() }, [])
+  useEffect(() => { reload().finally(() => setLoading(false)) }, [])
 
   const filtered = useMemo(() => {
     const n = q.trim().toLowerCase()
@@ -77,11 +76,11 @@ export default function ListaMagazzino() {
           <div className="bg-white rounded-lg p-6 max-w-sm w-full shadow-lg">
             <p className="mb-1 font-medium">Carica magazzino</p>
             <p className="mb-3 text-sm text-gray-600">{carica.descrizione} ({carica.cod})</p>
-            <input type="number" step="any" autoFocus className="border rounded p-2 w-full mb-2" placeholder="Quantità da aggiungere" value={qtaCarico} onChange={(e) => setQtaCarico(e.target.value)} />
+            <input type="number" step="any" min="0" autoFocus className="border rounded p-2 w-full mb-2" placeholder="Quantità da aggiungere" value={qtaCarico} onChange={(e) => setQtaCarico(e.target.value)} />
             {error && <p className="text-red-600 text-sm mb-2">{error}</p>}
             <div className="flex justify-end gap-2">
-              <button className="px-3 py-1 rounded bg-gray-100" onClick={() => setCarica(null)}>Annulla</button>
-              <button disabled={busy} className="px-3 py-1 rounded bg-blue-600 text-white disabled:opacity-50" onClick={confermaCarico}>Carica</button>
+              <button type="button" className="px-3 py-1 rounded bg-gray-100" onClick={() => setCarica(null)}>Annulla</button>
+              <button type="button" disabled={busy || !(Number(qtaCarico) > 0)} className="px-3 py-1 rounded bg-blue-600 text-white disabled:opacity-50" onClick={confermaCarico}>Carica</button>
             </div>
           </div>
         </div>
