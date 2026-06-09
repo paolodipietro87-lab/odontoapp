@@ -10,6 +10,7 @@ import DettaglioFattura from './pages/Fatture/DettaglioFattura.jsx'
 import ListaConformita from './pages/Conformita/ListaConformita.jsx'
 import EditorConformita from './pages/Conformita/EditorConformita.jsx'
 import DettaglioConformita from './pages/Conformita/DettaglioConformita.jsx'
+import ListaMagazzino from './pages/Magazzino/ListaMagazzino.jsx'
 
 export default function App() {
   const { user, loading } = useAuth()
@@ -29,6 +30,7 @@ export default function App() {
         <Route path="/conformita/nuova" element={<EditorConformita />} />
         <Route path="/conformita/:id" element={<DettaglioConformita />} />
         <Route path="/conformita/:id/modifica" element={<EditorConformita />} />
+        <Route path="/magazzino" element={<ListaMagazzino />} />
       </Routes>
     </BrowserRouter>
   )
