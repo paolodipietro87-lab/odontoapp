@@ -1,7 +1,7 @@
 # CLAUDE.md — Progetto OdontoApp
 
 > Cervello del progetto. Aggiornare a ogni sessione conclusa.
-> Ultima modifica: 2026-06-08 (sessione 9)
+> Ultima modifica: 2026-06-09 (sessione 10)
 
 ---
 
@@ -169,6 +169,7 @@ odoapp/
 | 15 | Meccanica emissione | ✅ Approccio A: transaction unica contatore+fattura (atomica, zero buchi). Offline → resta bozza |
 | 16 | Versioni PDF fattura | ✅ Una sola versione CON intestazione (unico esempio fornito). PDF solo da fattura emessa. Libreria `@react-pdf/renderer` |
 | 17 | Modello conformità | ✅ Medico = anagrafica clienti (snapshot); paziente = unico campo libero (2 punti, stesso valore); bullet conservazione + Ministero/REA fissi; avvertenze/prodotti/note/termini opzionali liberi; materiali con autocomplete prodotti; sempre modificabile (no progressivo). PDF 2 versioni (prop `intestazione`: medico con header / paziente senza) |
+| 18 | Magazzino | ✅ Sezione su collection `prodotti` (escluso `tipologia=Servizio`); campo `qtaDisponibile` (Excel col AJ); stato 2 valori (🟢 disponibile / 🔴 esaurito, no giallo "in esaurimento" per ora); scarico **one-shot** da conformità (riga materiale con `qta`+`prodottoId`=cod, flag `scaricata`, transaction); carico per riga; reminder esauriti in Home. `qta`/`prodottoId` solo per magazzino, esclusi dal PDF |
 
 ---
 
@@ -300,3 +301,18 @@ odoapp/
 - **Consulenza fiscale data fattura** (orientamento, non sostituisce commercialista): data = data operazione/consegna; emettere in ordine di data crescente; non retrodatare in anno chiuso; anni diversi = contatori separati automatici. Il rischio #1 (numero alto + data precedente) ora è coperto dalla guardia.
 - **114 test verdi**, build verde, deploy GitHub Pages verde (più commit, uno per voce).
 - **Da fare prossima sessione:** (1) e2e utente delle nuove rifiniture da telefono (combobox, clear, avvisi); (2) eventuali altre QoL; (3) **pre-consegna** ancora in sospeso (azzerare collection `fatture` + doc `contatori/{anno}` prima di Pietro).
+
+### 2026-06-09 — Sessione 10 (Magazzino + scarico da conformità)
+
+- **Decisione #18 Magazzino** (brainstorming): sezione nuova su collection `prodotti`, esclusi i `tipologia=Servizio`. Stato a **2 valori** (🟢 disponibile / 🔴 esaurito, niente giallo "in esaurimento" per ora — soglia per-prodotto rimandata, unità diverse). Scarico **one-shot** da conformità. Spec+piano: `docs/superpowers/specs/2026-06-09-magazzino-design.md`, `docs/superpowers/plans/2026-06-09-magazzino.md`.
+- **Eseguito** (subagent-driven, 8 task TDD, branch `magazzino` → merge `main`):
+  - `services/excel.js` + `pages/Anagrafiche/schema.js`: campo `qtaDisponibile` (Excel **col AJ** "Q.tà disponibile", mapping per nome header). **Re-import Excel resetta la disponibilità al foglio** (atteso).
+  - `utils/magazzino.js` (puro, **12 test**): `statoMagazzino` (>0 disponibile, else esaurito), `isServizio`, `filtroMagazzino`, `righeScarico` (materiali→[{prodottoId,qta}], somma per prodotto, scarta righe senza prodottoId/qta≤0), `applicaDelta`.
+  - `lib/db/magazzino.js` (**8 test**, fake runTransaction): `caricaProdotto(cod,qta)` (transaction, +qta); `scaricaConformita(id)` (transaction, **reads-before-writes**, decrementa ogni prodotto, flag `scaricata` one-shot anti-doppio, salta prodotti mancanti). Stock può andare **sotto zero** (voluto, lo copre lo stato esaurito).
+  - `conformita/RigaMateriale.jsx`: campo **Quantità** + `prodottoId` (=cod) salvato al pick; **azzerato se riscrivi il Tipo a mano** (fix bug scarico prodotto sbagliato). `EditorConformita`: header colonna Q.tà, `materialeVuoto` con qta/prodottoId. **Sottocategoria** aggiunta al detail delle tendine (conformità + `RigaFattura`).
+  - `conformita.format.test.js` (**+2 test**): conferma che `qta`/`prodottoId` **NON** entrano nel PDF (`pulisciMateriali` mappa solo tipo/fabbricante/modello/lotto).
+  - `pages/Magazzino/ListaMagazzino.jsx` + route `/magazzino`: lista non-Servizio, colonne Descrizione(bold)/Cod/Categoria/Sottocategoria/Stato(badge)/Disponibile, ricerca, **Carica per riga** (modale, valida >0, no unmount durante carico). 
+  - `DettaglioConformita.jsx`: bottone **"Conferma scarico"** (one-shot, poi "già scaricato ✓"). `MagazzinoReminder.jsx` in Home: banner **prodotti esauriti** (null se nessuno). Card Magazzino in Home (griglia 2 col).
+- **Legame chiave:** `prodottoId` = `cod` prodotto = doc id collection `prodotti` (`importRows` usa `doc(col,cod)`) → scarico decrementa `doc(db,'prodotti',prodottoId)`. Coerente end-to-end.
+- **138 test verdi**, build verde, merge `magazzino` → `main`, deploy GitHub Pages. Final review passata (1 bug stale-prodottoId fixato).
+- **Da fare prossima sessione:** (1) **re-import Excel prodotti** dell'utente (per popolare `qtaDisponibile` sui prodotti già su Firestore) + e2e magazzino dal vivo (stato/colori, scarico da conformità scala giacenza, carico risale, reminder esauriti); (2) eventuale 3° stato "in esaurimento" con soglia per-prodotto (rimandato); (3) **pre-consegna** ancora in sospeso (azzerare `fatture` + `contatori/{anno}`).
