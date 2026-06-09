@@ -3,6 +3,7 @@ import { listAll } from '../../lib/db/anagrafiche.js'
 import { caricaProdotto } from '../../lib/db/magazzino.js'
 import { filtroMagazzino, statoMagazzino } from '../../utils/magazzino.js'
 import PageHeader from '../../components/PageHeader.jsx'
+import Autocomplete from '../../components/Autocomplete.jsx'
 
 function Badge({ stato }) {
   const ok = stato === 'disponibile'
@@ -33,6 +34,16 @@ export default function ListaMagazzino() {
     return rows.filter((r) => [r.descrizione, r.cod].some((v) => String(v ?? '').toLowerCase().includes(n)))
   }, [rows, q])
 
+  const opzioni = useMemo(
+    () => rows.map((r) => ({
+      key: r.id,
+      label: r.descrizione ?? '',
+      detail: [r.cod, r.produttore, r.categoria, r.fornitore].filter(Boolean).join(' — '),
+      raw: r,
+    })),
+    [rows],
+  )
+
   async function confermaCarico() {
     setError(''); setBusy(true)
     try {
@@ -47,13 +58,23 @@ export default function ListaMagazzino() {
     <div className="p-6">
       <PageHeader title="Magazzino" />
       <div className="flex items-center gap-3 mb-4">
-        <input className="border rounded p-2 ml-auto w-64" placeholder="Cerca descrizione/codice…" value={q} onChange={(e) => setQ(e.target.value)} />
+        <div className="ml-auto w-64">
+          <Autocomplete
+            value={q}
+            options={opzioni}
+            onChangeText={setQ}
+            onSelect={(o) => setQ(o.raw.descrizione ?? '')}
+            placeholder="Cerca descrizione/codice…"
+            className="border rounded p-2 w-full"
+          />
+        </div>
       </div>
       <table className="w-full text-sm">
         <thead className="bg-gray-50"><tr>
           <th className="text-left p-2">Descrizione</th><th className="text-left p-2">Cod.</th>
           <th className="text-left p-2">Categoria</th><th className="text-left p-2">Sottocategoria</th>
-          <th className="text-left p-2">Stato</th><th className="text-right p-2">Disponibile</th><th></th>
+          <th className="text-left p-2">Fornitore</th><th className="text-left p-2">Stato</th>
+          <th className="text-right p-2">Disponibile</th><th className="text-left p-2">UM</th><th></th>
         </tr></thead>
         <tbody>
           {filtered.map((r) => (
@@ -62,8 +83,10 @@ export default function ListaMagazzino() {
               <td className="p-2">{r.cod}</td>
               <td className="p-2">{r.categoria}</td>
               <td className="p-2">{r.sottocategoria}</td>
+              <td className="p-2">{r.fornitore}</td>
               <td className="p-2"><Badge stato={statoMagazzino(r.qtaDisponibile)} /></td>
               <td className="p-2 text-right">{r.qtaDisponibile ?? 0}</td>
+              <td className="p-2">{r.um}</td>
               <td className="p-2"><button type="button" className="text-blue-600" onClick={() => { setCarica(r); setQtaCarico(''); setError('') }}>Carica</button></td>
             </tr>
           ))}
