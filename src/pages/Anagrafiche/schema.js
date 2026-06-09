@@ -50,6 +50,8 @@ export const FIELDS = {
     { name: 'codFornitore', label: 'Cod. fornitore', type: 'text' },
     { name: 'fornitore', label: 'Fornitore', type: 'text' },
     { name: 'prezzoForn', label: 'Prezzo fornitore', type: 'number' },
+    // Magazzino
+    { name: 'qtaDisponibile', label: 'Q.tà disponibile', type: 'number' },
   ],
 }
 
