@@ -33,6 +33,7 @@ export async function scaricaConformita(conformitaId) {
       const pRef = doc(db, 'prodotti', r.prodottoId)
       letti.push({ ref: pRef, snap: await tx.get(pRef), qta: r.qta })
     }
+    // Nota: la disponibilità può andare sotto zero — voluto. Lo stato "esaurito" la copre.
     for (const l of letti) {
       if (!l.snap.exists()) continue
       tx.update(l.ref, { qtaDisponibile: applicaDelta(l.snap.data().qtaDisponibile, -l.qta) })
