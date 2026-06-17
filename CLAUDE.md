@@ -1,7 +1,7 @@
 # CLAUDE.md — Progetto OdontoApp
 
 > Cervello del progetto. Aggiornare a ogni sessione conclusa.
-> Ultima modifica: 2026-06-09 (sessione 10)
+> Ultima modifica: 2026-06-17 (sessione 11 — go-live, reset pre-consegna fatto)
 
 ---
 
@@ -319,3 +319,12 @@ odoapp/
 - **E2e utente dal vivo OK:** re-import Excel prodotti (col AJ popolata, 26 prodotti con giacenza, esauriti 31→5), carico OK, scarico da conformità OK (giacenza scende, anti-doppio OK), reminder esauriti OK. **Magazzino chiuso al 100%, in produzione.**
 - **Date conformità da calendario:** i 3 campi data conformità (`prescrizioneMedicaDel`, `data`, `dataConsegna`) ora sono `<input type="date">` (calendario, come la fattura). Storage ISO; PDF formattato IT via `formatDataIt` (importato da `fattura.format.js`) in `conformitaToProps`. **+2 test** (ISO→IT, passthrough testo non-ISO). **140 test verdi**, deploy verde. Nota: conformità vecchie con date a mano (non-ISO) appaiono vuote nel campo calendario (riselezionare); nel PDF restano invariate (formatDataIt tollera).
 - **Da fare prossima sessione:** (1) eventuale 3° stato "in esaurimento" con soglia per-prodotto (rimandato); (2) **pre-consegna** ancora in sospeso (azzerare `fatture` + `contatori/{anno}` prima di Pietro; i prodotti restano col loro `qtaDisponibile`).
+
+### 2026-06-17 — Sessione 11 (PRE-CONSEGNA: reset Firestore + go-live)
+
+- **App in produzione da questo pomeriggio.** Eseguito il reset pre-consegna in sospeso da sessione 7/10.
+- **Script `scripts/reset-firestore.mjs`** (nuovo, committato + pushato): client SDK Firebase, login email/password Paolo (regole Firestore = utente auth), password via env `FB_PWD` o `Read-Host` (mai in chiaro nel comando/history). Flag `--dry` = conteggio senza cancellare. Svuota le collection `fatture`, `conformita`, `contatori`. **Anagrafiche/prodotti NON toccati.** Batch da 500 (limite Firestore). Riusabile.
+- **Eseguito dall'utente in PowerShell** (la password non è mai passata da Claude): dry-run → 9 fatture + 5 conformità + 1 contatore (2026) = 15 doc. Delete reale → 15 rimossi. Dry-run finale → **0/0/0**. Anagrafiche/prodotti intatti.
+- **Nodo risolto:** primo tentativo `auth/invalid-credential` = typo password (NON problema Google/OAuth: l'app usa Auth email/password; il login Google riguarda solo la Console Firebase).
+- **Stato:** OdontoApp parte pulito da **`001/2026`**. Test chiuso, fase operativa iniziata. Memory [[odontoapp-reset-before-delivery]] aggiornata (✅ fatto).
+- **Da fare:** (1) eventuale 3° stato magazzino "in esaurimento" (rimandato); (2) supporto su feedback reali di Pietro.
